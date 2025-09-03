@@ -27,7 +27,7 @@ def get_weather_info(query: str) -> str:
             url,
             json={"query": query},
             headers={"Content-Type": "application/json"},
-            timeout=10
+            timeout=300
         )
         
         if response.status_code == 200:
@@ -70,10 +70,9 @@ weather_agent = Agent(
 
 # Create a Weather Task
 weather_task = Task(
-    description='''Get the weather information for Dhaka tomorrow and provide 
-    a detailed response about whether it will rain. Include any additional 
+    description='''Get the weather information of the day after in Dhaka. Include any additional 
     weather details that might be useful for planning outdoor activities.''',
-    expected_output='''A comprehensive weather report for Dhaka tomorrow, 
+    expected_output='''A comprehensive weather report for Dhaka on the day after, 
     specifically addressing rain probability and including practical advice 
     for outdoor activities.''',
     agent=weather_agent
@@ -99,7 +98,15 @@ def main():
         agents=[weather_agent],
         tasks=[weather_task],
         verbose=True,
-        llm="gemini/gemini-1.5-flash"
+        llm="gemini/gemini-2.0-flash",
+        memory=True,
+        embedder={
+            "provider": "google",
+            "config": {
+                "api_key": "AIzaSyCS4NPTf-t8SUtXnDSrglj_Vmj2Gl1yv9o",
+                "model": "text-embedding-004"  # or "text-embedding-preview-0409"
+            }
+        }
     )
     
     # Execute the task

@@ -30,16 +30,14 @@ def get_hotels_tool(location: str, checkinDate: str, checkoutDate: str, max_item
         
         # Prepare the Actor input
         run_input = {
-            "checkInDate": "2025-09-03",
-            "checkOutDate": "2025-09-04",
             "currency": "USD",
             "includeAiReviewsSummary": False,
             "includeAttractions": False,
             "includeHotels": True,      
-            "includeNearbyResults": True,
-            "includePriceOffers": True, 
+            "includeNearbyResults": False,
+            "includePriceOffers": False, 
             "includeRestaurants": False,
-            "includeTags": True,
+            "includeTags": False,
             "includeVacationRentals": False,
             "language": "en",
             "maxItemsPerQuery": max_items,
@@ -97,8 +95,8 @@ hotel_agent = Agent(
 
 # Create Hotel Search Task
 hotel_task = Task(
-    description='''Search for hotels in Lauterbrunnen, Switzerland. 
-    Find top recommendations and provide detailed hotel information.''',
+    description='''Search for hotels only one  in Lauterbrunnen, Switzerland. 
+    Find top recommendations and provide detailed hotel information.Use the tool once if it gives complete results.''',
     expected_output='''A JSON-formatted list of hotels in Lauterbrunnen, Switzerland 
     including name, description, address, coordinates, rating, number of reviews, 
     price range, amenities, and image URLs.''',

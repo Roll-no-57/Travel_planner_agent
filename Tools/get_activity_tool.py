@@ -106,7 +106,7 @@ activity_agent = Agent(
 activity_task = Task(
     description='''Search for activities, attractions, and restaurants in Lauterbrunnen, Switzerland. 
     Find the top recommendations including tourist attractions, good restaurants, and interesting 
-    places to visit. Provide comprehensive information about each activity.''',
+    places to visit. Provide comprehensive information about each activity.Use the tool once if it gives complete results.''',
     expected_output='''A detailed JSON-formatted list of activities in Lauterbrunnen, Switzerland 
     including attractions, restaurants, and other points of interest. Each activity should include 
     title, description, address, coordinates, and image URLs.''',
