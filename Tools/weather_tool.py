@@ -1,6 +1,5 @@
 import requests
-from crewai.tools import tool
-from crewai import Agent, Task, Crew
+from tool_decorator import tool
 import os
 from dotenv import load_dotenv
 
@@ -11,7 +10,7 @@ load_dotenv()
 # Set your Gemini API key
 os.environ["GEMINI_API_KEY"] = "AIzaSyCS4NPTf-t8SUtXnDSrglj_Vmj2Gl1yv9o"
 
-@tool("weather_info")
+@tool
 def get_weather_info(query: str) -> str:
     """
     Get weather information for any location or weather-related query.
@@ -48,75 +47,3 @@ def get_weather_info(query: str) -> str:
 
 
 
-
-
-#=======================================FOR testing tool===========================================
-
-
-
-
-
-# Create a Weather Agent
-weather_agent = Agent(
-    role='Weather Specialist',
-    goal='Provide accurate and helpful weather information to users',
-    backstory='''You are a knowledgeable weather specialist who can provide 
-    detailed weather information for any location. You understand weather patterns, 
-    can interpret forecasts, and always provide helpful weather-related advice.''',
-    tools=[get_weather_info],
-    verbose=True,
-    llm="gemini/gemini-1.5-flash"
-)
-
-# Create a Weather Task
-weather_task = Task(
-    description='''Get the weather information of the day after in Dhaka. Include any additional 
-    weather details that might be useful for planning outdoor activities.''',
-    expected_output='''A comprehensive weather report for Dhaka on the day after, 
-    specifically addressing rain probability and including practical advice 
-    for outdoor activities.''',
-    agent=weather_agent
-)
-
-# Create and run the Crew
-def main():
-    """Main function to execute the weather crew"""
-    
-    # Test the API health first
-    try:
-        health_response = requests.get("https://weather-agent-xhzk.onrender.com/health", timeout=5)
-        if health_response.status_code == 200:
-            print("✅ Weather API is healthy!")
-            print(f"Status: {health_response.json()}")
-        else:
-            print("⚠️ Weather API health check failed")
-    except Exception as e:
-        print(f"❌ Could not reach weather API: {e}")
-    
-    # Create the crew with Gemini model
-    weather_crew = Crew(
-        agents=[weather_agent],
-        tasks=[weather_task],
-        verbose=True,
-        llm="gemini/gemini-2.0-flash",
-        memory=True,
-        embedder={
-            "provider": "google",
-            "config": {
-                "api_key": "AIzaSyCS4NPTf-t8SUtXnDSrglj_Vmj2Gl1yv9o",
-                "model": "text-embedding-004"  # or "text-embedding-preview-0409"
-            }
-        }
-    )
-    
-    # Execute the task
-    print("\n🚀 Starting weather crew...")
-    result = weather_crew.kickoff()
-    
-    print("\n📋 Final Result:")
-    print("=" * 50)
-    print(result)
-    return result
-
-if __name__ == "__main__":
-    main()

@@ -1,9 +1,8 @@
 from apify_client import ApifyClient
 import json
 
-from crewai.tools import tool
-from crewai import Agent, Task, Crew
 from dotenv import load_dotenv
+from tool_decorator import tool
 
 import os
 
@@ -11,7 +10,7 @@ load_dotenv()
 
 
 
-@tool("get_activities")
+@tool
 def get_activity_tool(location: str, max_items: int = 2) -> str:
     """
     Search for activities, attractions, and restaurants in a specific location.
@@ -29,8 +28,8 @@ def get_activity_tool(location: str, max_items: int = 2) -> str:
         run_input = {
             "query": location,
             "maxItemsPerQuery": max_items,
-            "includeTags": True,
-            "includeNearbyResults": True,
+            "includeTags": False,
+            "includeNearbyResults": False,
             "includeAttractions": True,
             "includeRestaurants": True,
             "includeHotels": False,
@@ -52,19 +51,41 @@ def get_activity_tool(location: str, max_items: int = 2) -> str:
 
         # Fetch and filter results
         for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+            # Safely handle latitude and longitude conversion
+            latitude = item.get("latitude")
+            longitude = item.get("longitude")
+            
+            # Convert to float if not None, otherwise use 0.0
+            try:
+                lat_float = float(latitude) if latitude is not None else 0.0
+            except (ValueError, TypeError):
+                lat_float = 0.0
+                
+            try:
+                lon_float = float(longitude) if longitude is not None else 0.0
+            except (ValueError, TypeError):
+                lon_float = 0.0
+            
+            # Safely handle rating conversion
+            rating = item.get("rating")
+            try:
+                rating_float = float(rating) if rating is not None else 0.0
+            except (ValueError, TypeError):
+                rating_float = 0.0
+            
             activity = {
-                "tag": item.get("category"),
+                "tag": item.get("category", "attraction"),
                 "title": item.get("name") or item.get("locationString") or "Unknown",
                 "description": item.get("description", f"{item.get('name', 'Place')} in {item.get('locationString','Unknown')}"),
                 "minimum_duration": "1-2 hours",  # Default
                 "booking_url": item.get("webUrl") or item.get("website"),
                 "address": item.get("address", "Address not available"),
                 "geocode": {
-                    "latitude": float(item.get("latitude", 0.0)),
-                    "longitude": float(item.get("longitude", 0.0))
+                    "latitude": lat_float,
+                    "longitude": lon_float
                 },
                 "NumberOfReviews": item.get("numberOfReviews", 0),
-                "Rating": item.get("rating", 0.0),
+                "Rating": rating_float,
                 "image_urls": item.get("photos", [])[:5] if item.get("photos") else []
             }
             activities.append(activity)
@@ -80,63 +101,3 @@ def get_activity_tool(location: str, max_items: int = 2) -> str:
     except Exception as e:
         return f"Error searching activities: {str(e)}"
     
-    
-    
-    
-    
-    
-
-
-#============================For testing purpose==================================
-
-# Create Activity Search Agent
-activity_agent = Agent(
-    role='Activity Coordinator',
-    goal='Find and organize exciting activities, attractions, and dining options for travelers',
-    backstory='''You are an enthusiastic activity coordinator who specializes in 
-    discovering amazing experiences for travelers. You know how to find the best 
-    attractions, restaurants, and activities in any location, and you always 
-    provide comprehensive details to help people plan their trips.search at most 3 activities''',
-    tools=[get_activity_tool],
-    verbose=True,
-    llm="gemini/gemini-1.5-flash"
-)
-
-# Create Activity Search Task
-activity_task = Task(
-    description='''Search for activities, attractions, and restaurants in Lauterbrunnen, Switzerland. 
-    Find the top recommendations including tourist attractions, good restaurants, and interesting 
-    places to visit. Provide comprehensive information about each activity.Use the tool once if it gives complete results.''',
-    expected_output='''A detailed JSON-formatted list of activities in Lauterbrunnen, Switzerland 
-    including attractions, restaurants, and other points of interest. Each activity should include 
-    title, description, address, coordinates, and image URLs.''',
-    agent=activity_agent
-)
-
-def test_activity_crew():
-    """Test the activity search crew"""
-    print("Activity Search Crew Test")
-    print("=" * 30)
-    
-    # Create the crew
-    activity_crew = Crew(
-        agents=[activity_agent],
-        tasks=[activity_task],
-        verbose=True,
-        llm="gemini/gemini-1.5-flash"
-    )
-    
-    # Execute the task
-    result = activity_crew.kickoff()
-    
-    print("\nFinal Activity Search Result:")
-    print("=" * 40)
-    print(result)
-    return result
-
-def main():
-    """Main function to test the activity tool"""
-    test_activity_crew()
-
-if __name__ == "__main__":
-    main()

@@ -16,7 +16,6 @@ import os
 
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
 BASE_SYSTEM_PROMPT = ""
 
 
@@ -88,7 +87,7 @@ class ReactAgent:
     def __init__(
         self,
         tools: Tool | list[Tool],
-        model: str = "deepseek-r1-distill-llama-70b",
+        model: str = "gemini-2.0-flash-exp",
         system_prompt: str = BASE_SYSTEM_PROMPT,
     ) -> None:
         self.client = genai.GenerativeModel(model)

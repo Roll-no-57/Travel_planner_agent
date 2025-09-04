@@ -1,13 +1,12 @@
 import json
 import requests
-from crewai.tools import tool
-from crewai import Agent, Task, Crew
+from tool_decorator import tool
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-@tool("get_search_results")
+@tool
 def get_search_results_tool(query: str, max_results: int = 4) -> str:
     """
     Search the internet for information on a given topic.
@@ -68,55 +67,3 @@ def get_search_results_tool(query: str, max_results: int = 4) -> str:
     except Exception as e:
         return f"Error during search: {str(e)}"
 
-
-# ======================================== For testing purpose ======================================================
-
-# Create Search Agent
-search_agent = Agent(
-    role='Internet Research Specialist',
-    goal='Find and organize relevant information from internet searches',
-    backstory='''You are an expert internet researcher who excels at finding 
-    accurate and relevant information online. You know how to formulate effective 
-    search queries and analyze search results to provide valuable insights.''',
-    tools=[get_search_results_tool],
-    verbose=True,
-    llm="gemini/gemini-1.5-flash"
-)
-
-# Create Search Task
-search_task = Task(
-    description='''Search for information about "latest AI developments 2025". 
-    Find the most relevant and recent information available.''',
-    expected_output='''A JSON-formatted list of search results including titles, 
-    links, snippets, and sources for the most relevant information about 
-    latest AI developments in 2025.''',
-    agent=search_agent
-)
-
-def test_search_crew():
-    """Test the search crew"""
-    print("Search Tool Crew Test")
-    print("=" * 30)
-    
-    # Create the crew
-    search_crew = Crew(
-        agents=[search_agent],
-        tasks=[search_task],
-        verbose=True,
-        llm="gemini/gemini-1.5-flash"
-    )
-    
-    # Execute the task
-    result = search_crew.kickoff()
-    
-    print("\nFinal Search Result:")
-    print("=" * 40)
-    print(result)
-    return result
-
-def main():
-    """Main function to test the search tool"""
-    test_search_crew()
-
-if __name__ == "__main__":
-    main()
