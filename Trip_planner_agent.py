@@ -8,6 +8,7 @@ from Tools.get_hotels_tool import get_hotels_tool
 # from Tools.vision_capability_tool import get_multimodal_capability  # Temporarily disabled
 from Tools.web_scrape_tool import get_raw_website_content_tool
 from Tools.web_search_tool import get_search_results_tool
+from Tools.image_search_tool import get_image_search_results_tool
 
 
 class TripPlanningAgent:
@@ -29,7 +30,8 @@ class TripPlanningAgent:
             get_hotels_tool,
             # get_multimodal_capability,  # Temporarily disabled
             get_raw_website_content_tool,
-            get_search_results_tool
+            get_search_results_tool,
+            get_image_search_results_tool
         ]
 
         # Trip planning-specific system prompt
@@ -39,29 +41,14 @@ You are an expert trip planning assistant that creates comprehensive travel itin
 1. SEARCH FOR DESTINATIONS: Use web search to find the best cities/destinations/towns based on user requirements
 2. FIND ACCOMMODATIONS: For each destination, find the best hotel/accommodation using the hotels tool
 3. DISCOVER ACTIVITIES: Find top activities and attractions in each city using the activities tool
-4. CREATE STRUCTURED RESPONSE: Always respond with a complete JSON structure matching the exact format specified
+4. For the overview section image urls use the image_search_tool to find relevant images of the destination
+5. CREATE STRUCTURED RESPONSE: Always respond with a complete JSON structure matching the exact format specified
 
 CRITICAL RESPONSE FORMAT:
 You must ALWAYS return a JSON response in this exact structure:
 
 {
-  "message": "Your conversational response to the user",
-  "Requirement_options": ["extracted user preferences/requirements"],
-  "intent": "trip_planning",
-  "sessionId": "provided session ID or generate one",
-  "timestamp": "current ISO timestamp",
   "itinerary": {
-    "overview": {
-      "start_location": "departure city/location",
-      "destination_location": "main destination or 'Multiple Cities'",
-      "summary": "brief trip summary",
-      "duration_days": 0,
-      "people_count": 0,
-      "start_date": "YYYY-MM-DD",
-      "end_date": "YYYY-MM-DD", 
-      "image_urls": ["relevant destination images"],
-      "Estimated_overall_cost": 0
-    },
     "Cities": [
       {
         "travel": {
@@ -117,8 +104,24 @@ You must ALWAYS return a JSON response in this exact structure:
           }
         ]
       }
-    ]
-  }
+    ],
+    "overview": {
+      "start_location": "departure city/location",
+      "destination_location": "main destination or 'Multiple Cities'",
+      "summary": "brief trip summary",
+      "duration_days": 0,
+      "people_count": 0,
+      "start_date": "YYYY-MM-DD",
+      "end_date": "YYYY-MM-DD", 
+      "image_urls": ["relevant destination images"],
+      "Estimated_overall_cost": 0
+    }
+  },
+  "message": "Your conversational response to the user",
+  "Requirement_options": ["extracted user preferences/requirements"],
+  "intent": "trip_planning",
+  "sessionId": "provided session ID or generate one",
+  "timestamp": "current ISO timestamp",
 }
 
 IMPORTANT RULES:
