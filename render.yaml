@@ -9,6 +9,12 @@ services:
     envVars:
       - key: GEMINI_API_KEY
         sync: false
+      - key: APIFY_API_TOKEN
+        sync: false
+      - key: SERPER_API_KEY
+        sync: false
+      - key: HF_TOKEN
+        sync: false
       - key: PYTHONUNBUFFERED
         value: "1"
     healthCheckPath: /health
