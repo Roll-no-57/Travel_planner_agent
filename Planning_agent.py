@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Union, List
 
 from colorama import Fore
 from dotenv import load_dotenv
@@ -86,7 +87,7 @@ class ReactAgent:
 
     def __init__(
         self,
-        tools: Tool | list[Tool],
+        tools: Union[Tool, List[Tool]],
         model: str = "gemini-2.0-flash-exp",
         system_prompt: str = BASE_SYSTEM_PROMPT,
     ) -> None:

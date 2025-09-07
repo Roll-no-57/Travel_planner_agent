@@ -2,7 +2,7 @@ from Planning_agent import ReactAgent
 from tool_decorator import Tool
 from colorama import Fore, Style
 import json
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass
 from enum import Enum
 
@@ -42,7 +42,7 @@ class MultiAgent(ReactAgent):
         self,
         name: str,
         role: AgentRole,
-        tools: Tool | list[Tool] = None,
+        tools: Union[Tool, List[Tool]] = None,
         model: str = "gemini-2.0-flash-exp",
         system_prompt: str = "",
         registry: AgentRegistry = None,

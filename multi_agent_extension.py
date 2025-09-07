@@ -5,7 +5,7 @@ from Planning_agent import ReactAgent
 from tool_decorator import Tool
 from colorama import Fore, Style
 import json
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any, Optional, Callable, Union
 from dataclasses import dataclass, field
 from enum import Enum
 import time
@@ -83,7 +83,7 @@ class HierarchicalAgent(ReactAgent):
         self,
         name: str,
         role: AgentRole,
-        tools: Tool | list[Tool] = None,
+        tools: Union[Tool, List[Tool]] = None,
         model: str = "gemini-2.0-flash-exp",
         system_prompt: str = "",
         registry: ParallelAgentRegistry = None,
