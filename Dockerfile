@@ -21,7 +21,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Make startup script executable
-RUN chmod +x startup.sh test_startup.py
+RUN ls -la startup.sh test_startup.py && \
+    chmod +x startup.sh test_startup.py
 
 # Create a non-root user for security
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
