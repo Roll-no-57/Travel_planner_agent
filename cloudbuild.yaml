@@ -1,0 +1,48 @@
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/travel-planner-agent:$COMMIT_SHA', '.']
+  
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/travel-planner-agent:$COMMIT_SHA']
+  
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'travel-planner-agent'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/travel-planner-agent:$COMMIT_SHA'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+      - '--memory'
+      - '1Gi'
+      - '--cpu'
+      - '1'
+      - '--timeout'
+      - '300'
+      - '--max-instances'
+      - '10'
+      - '--concurrency'
+      - '80'
+      - '--set-env-vars'
+      - 'PYTHONUNBUFFERED=1,PYTHONDONTWRITEBYTECODE=1'
+
+# Store images in Google Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/travel-planner-agent:$COMMIT_SHA'
+
+# Configure build options
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
+
+# Set timeout for the entire build
+timeout: '600s'

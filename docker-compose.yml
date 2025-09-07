@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  travel-planner:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      # Add your environment variables here
+      # - GEMINI_API_KEY=${GEMINI_API_KEY}
+      # - APIFY_API_TOKEN=${APIFY_API_TOKEN}
+      # - SERPER_API_KEY=${SERPER_API_KEY}
+      # - HF_TOKEN=${HF_TOKEN}
+    env_file:
+      - .env  # Optional: load from .env file
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
