@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-agent = create_trip_agent(model="gemini-2.0-flash-exp")
+agent = create_trip_agent(model="gemini-1.5-flash")
 
 @app.route('/travel', methods=['POST'])
 def travel_query():

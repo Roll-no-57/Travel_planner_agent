@@ -357,6 +357,7 @@ class TripPlanningAgent:
         =========================
         IMPORTANT RULES
         =========================
+        - For any kind of image urls must always use the image search tool to get relevant images.
         - NEVER leave any field null or empty. Use sensible defaults if real data is unavailable.
         - For **trip_planning**:
           - Always determine destinations first (via search/places), then accommodations (via search/places/scrape), then activities (via places/search/scrape), for the image urls of hotels and activities or anything related to images always use the image search tool.
