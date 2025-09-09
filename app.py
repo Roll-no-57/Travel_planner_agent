@@ -18,10 +18,10 @@ def travel_query():
         return jsonify({"error": "No query provided"}), 400
     try:
         response = agent.process_trip_query(query)
-        print(f"[RESPONSE] /travel | response: {response}")
+        print({"response": response})
         return jsonify({"response": response})
     except Exception as e:
-        print(f"[RESPONSE] /travel | error: {str(e)}")
+        print({"error": f"Error processing query: {str(e)}"})
         return jsonify({"error": f"Error processing query: {str(e)}"}), 500
 
 @app.route('/health', methods=['GET'])

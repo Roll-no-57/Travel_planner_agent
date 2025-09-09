@@ -21,7 +21,6 @@ def get_image_search_results_tool(query: str, max_results: int = 5) -> str:
         serper_api_key = os.getenv("SERPER_API_KEY")
         if not serper_api_key:
             return "Error: SERPER_API_KEY not found in environment variables"
-        
         # Perform image search request
         url = "https://google.serper.dev/images"
         payload = json.dumps({"q": query})
@@ -37,7 +36,7 @@ def get_image_search_results_tool(query: str, max_results: int = 5) -> str:
         data = response.json()
         if 'images' not in data:
             return "No image results found or API error occurred."
-        
+
         # Process image search results
         results = data['images']
         image_results = []
@@ -60,15 +59,6 @@ def get_image_search_results_tool(query: str, max_results: int = 5) -> str:
         
     except Exception as e:
         return f"Error during image search: {str(e)}"
-
-
-
-
-
-
-
-
-
 #========================== Test the image search tool ==========================
 def test_image_search():
     """Test the image search tool with various queries"""

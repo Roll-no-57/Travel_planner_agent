@@ -11,7 +11,7 @@ load_dotenv()
 
 
 @tool
-def get_activity_tool(location: str, max_items: int = 2) -> str:
+def get_activity_tool(location: str, max_items: int = 3) -> str:
     """
     Search for activities, attractions, and restaurants in a specific location.
     Returns formatted activity data including attractions, restaurants, and places to visit.
