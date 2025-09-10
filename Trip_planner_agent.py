@@ -13,209 +13,34 @@ from Tools.weather_tool import get_weather_info
 
 
 class TripPlanningAgent:
+  """
+  A comprehensive trip planning agent that can answer various travel-related queries
+  using natural language processing and multiple travel data sources.
+  """
+
+  def __init__(self, model: str = "gemini-2.0-flash-exp", provider=None):
     """
-    A comprehensive trip planning agent that can answer various travel-related queries
-    using natural language processing and multiple travel data sources.
+    Initialize the Trip Planning Agent with all necessary tools.
+    Args:
+      model: The LLM model to use for reasoning
+      provider: 'gemini' or 'groq' (optional). If None, ReactAgent decides via env.
     """
-    
-    def __init__(self, model: str = "gemini-2.0-flash-exp"):
-        """
-        Initialize the Trip Planning Agent with all necessary tools.
-        
-        Args:
-            model: The LLM model to use for reasoning
-        """
-        # Define all trip planning-related tools
-        self.tools = [
-            # get_activity_tool,
-            # get_hotels_tool,
-            get_multimodal_capability,  # Temporarily disabled
-            get_raw_website_content_tool,
-            get_search_results_tool,
-            get_image_search_results_tool,
-            get_weather_info
-        ]
+    # Define all trip planning-related tools
+    self.tools = [
+      # get_activity_tool,
+      # get_hotels_tool,
+      get_multimodal_capability,  # Temporarily disabled
+      get_raw_website_content_tool,
+      get_search_results_tool,
+      get_image_search_results_tool,
+      get_weather_info,
+    ]
 
-        # Trip planning-specific system prompt
-#         self.system_prompt = """
-# You are an intelligent multi-purpose trip planning assistant. 
-# Your primary role is to **understand the intent of the user query** and respond accordingly. 
-# You have access to tools for destinations, hotels, activities, weather, images, search, web scraping and multimodal.
-
-# =========================
-# INTENT CLASSIFICATION
-# =========================
-# - If the user greets you or asks general/non-travel questions → respond in JSON with intent = `general_conversation`.
-# - If the user asks about the **weather** → use the weather tool and return a JSON response in the defined format.
-# - If the user asks to **plan a trip** → ensure all required information is collected first, then generate a structured itinerary JSON.
-# - If the user provides an **image URL and asks about the location** → first use the multimodal tool to analyze the image, then continue planning or answering.
-# - For any other query → classify appropriately and respond in JSON.
-
-# =========================
-# GENERAL CONVERSATION RESPONSE FORMAT
-# =========================
-# When intent = `general_conversation`, always respond like this:
-# {
-#   "response": {
-#     "message": "I'm doing great! How about you? Where are you planning to go?",
-#     "Requirement_options": [],
-#     "intent": "general_conversation",
-#     "sessionId": "provided session ID or generate one",
-#     "timestamp": "current ISO timestamp",
-#     "itinerary": {}
-#   }
-# }
-
-# =========================
-# TRIP REQUIREMENTS
-# =========================
-# For **trip_planning**, the user must provide:
-# - Start location
-# - Destination
-# - Number of days
-# - Group size (people count)
-# - Budget range  
-
-# If any requirement is missing:
-# - Ask the user for the missing information.
-# - Provide helpful suggestions in **Requirement_options**.
-# - Response should follow the **Requirement Collection JSON** format (no itinerary yet).
-
-# =========================
-# REQUIREMENT COLLECTION RESPONSE FORMAT
-# =========================
-# {
-#   "response": {
-#     "message": "Hey, before creating your itinerary, could you tell me how many days you plan to stay?",
-#     "Requirement_options": ["1 day", "2 days", "3 days"],
-#     "intent": "requirement_collection",
-#     "sessionId": "provided session ID or generate one",
-#     "timestamp": "current ISO timestamp",
-#     "itinerary": {}
-#   }
-# }
-
-# =========================
-# WEATHER RESPONSE FORMAT
-# =========================
-# When intent = `weather_info`, always respond in this format:
-# {
-#   "response": {
-#     "message": "Here is your detailed weather information...",
-#     "Requirement_options": [],
-#     "intent": "weather_info",
-#     "sessionId": "provided session ID or generate one",
-#     "timestamp": "current ISO timestamp",
-#     "itinerary": {}
-#   }
-# }
-
-# =========================
-# TRIP PLANNING RESPONSE FORMAT
-# =========================
-# Once all requirements are collected, generate the final itinerary as follows:
-
-# {
-#   "response": {
-#     "itinerary": {
-#       "Cities": [
-#         {
-#           "travel": {
-#             "from": "departure location",
-#             "to": "arrival city",
-#             "estimate_time": 0,
-#             "estimate_price": 0,
-#             "option": "flight/train/bus/car"
-#           },
-#           "Accomodation": {
-#             "name": "hotel name",
-#             "description": "hotel description",
-#             "address": "full address",
-#             "geocode": {
-#               "latitude": 0.0,
-#               "longitude": 0.0
-#             },
-#             "rating": 0,
-#             "review_count": 0,
-#             "phone": "contact number",
-#             "amenities": ["list of amenities"],
-#             "price": {
-#               "amount": 0,
-#               "currency": "USD"
-#             },
-#             "guests": 0,
-#             "image_urls": ["hotel images"],
-#             "booking_url": "reservation link"
-#           },
-#           "days": [
-#             {
-#               "title": "Day title",
-#               "date": "YYYY-MM-DD",
-#               "description": "day description",
-#               "day_number": "Day 1",
-#               "activities": [
-#                 {
-#                   "tag": "category",
-#                   "title": "activity name",
-#                   "description": "activity description",
-#                   "minimum_duration": "time needed",
-#                   "booking_url": "booking link",
-#                   "address": "activity address",
-#                   "NumberOfReview": 0,
-#                   "Ratings": 0.0,
-#                   "geocode": {
-#                     "latitude": 0.0,
-#                     "longitude": 0.0
-#                   },
-#                   "image_urls": ["activity images"]
-#                 }
-#               ]
-#             }
-#           ]
-#         }
-#       ],
-#       "overview": {
-#         "start_location": "departure city/location",
-#         "destination_location": "main destination or 'Multiple Cities'",
-#         "summary": "brief trip summary",
-#         "duration_days": 0,
-#         "people_count": 0,
-#         "start_date": "YYYY-MM-DD",
-#         "end_date": "YYYY-MM-DD", 
-#         "image_urls": ["relevant destination images"],
-#         "Estimated_overall_cost": 0
-#       }
-#     },
-#     "message": "Conversational summary of the trip for the user",
-#     "Requirement_options": ["extracted user preferences/requirements"],
-#     "intent": "trip_planning",
-#     "sessionId": "provided session ID or generate one",
-#     "timestamp": "current ISO timestamp"
-#   }
-# }
-
-# =========================
-# IMPORTANT RULES
-# =========================
-# - NEVER leave any field null or empty. Use sensible defaults if real data is unavailable.
-# - For **trip_planning**:
-#   - Always determine destinations first, then accommodations, then activities.
-#   - Provide realistic cost and travel duration estimates.
-#   - Suggest 3-4 activities per day maximum.
-#   - Always use tools for hotels, activities, places, and images.
-# - For **weather_info**, always use the exact weather JSON format.
-# - For **requirement_collection**, always use the requirement collection JSON format.
-# - For **general_conversation**, always use the general conversation JSON format.
-# - Responses must always be conversational and helpful inside the `message` field.
-# - Always extract and include user preferences/requirements into `Requirement_options` when applicable.
-# """
-
-
-
-        self.system_prompt = """
-        You are an intelligent multi-purpose trip planning assistant. 
-        Your primary role is to **understand the intent of the user query** and respond accordingly. 
-        You have access to tools for search, places, scraping, images, and multimodal understanding.
+    # Trip planning-specific system prompt
+    self.system_prompt = """
+    You are an intelligent multi-purpose trip planning assistant. 
+    Your primary role is to **understand the intent of the user query** and respond accordingly.You will be provided with some previous conversation history with the user if available. analyze those as well to get context about the user. 
+    You have access to tools for search, places, scraping, images, and multimodal understanding.
 
         =========================
         INTENT CLASSIFICATION
@@ -357,7 +182,7 @@ class TripPlanningAgent:
         =========================
         IMPORTANT RULES
         =========================
-        - For any kind of image urls must always use the image search tool to get relevant images.
+        - For any kind of image urls must always use the image search tool to get relevant images.give at least 3 image urls for each case like hotel , activity , overview all of them must have image urls.
         - NEVER leave any field null or empty. Use sensible defaults if real data is unavailable.
         - For **trip_planning**:
           - Always determine destinations first (via search/places), then accommodations (via search/places/scrape), then activities (via places/search/scrape), for the image urls of hotels and activities or anything related to images always use the image search tool.
@@ -369,28 +194,28 @@ class TripPlanningAgent:
         - For **general_conversation**, always use the general conversation JSON format.
         - Responses must always be conversational and helpful inside the `message` field.
         - Always extract and include user preferences/requirements into `Requirement_options` when applicable.
-        """
+    """
 
-        
-        # Initialize the ReAct agent with trip planning tools
-        self.agent = ReactAgent(
-            tools=self.tools,
-            model=model,
-            system_prompt=self.system_prompt
-        )
-    
-    def process_trip_query(self, query: str, session_id: str = None) -> dict:
-        """
-        Process a trip planning query and return a comprehensive response.
-        
-        Args:
-            query: The user's trip planning request
-            session_id: Optional session ID for tracking
-            
-        Returns:
-            dict: The structured trip planning response
-        """
-        try:
+    # Initialize the ReAct agent with trip planning tools
+    self.agent = ReactAgent(
+      tools=self.tools,
+      model=model,
+      system_prompt=self.system_prompt,
+      provider=provider,
+    )
+
+  def process_trip_query(self, query: str, session_id: str = None) -> dict:
+    """
+    Process a trip planning query and return a comprehensive response.
+
+    Args:
+      query: The user's trip planning request
+      session_id: Optional session ID for tracking
+
+    Returns:
+      dict: The structured trip planning response
+    """
+    try:
             # Generate session ID if not provided
             if not session_id:
                 session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -417,8 +242,8 @@ class TripPlanningAgent:
             except json.JSONDecodeError:
                 return self._create_fallback_response(query, session_id, response)
                 
-        except Exception as e:
-            return self._create_error_response(query, session_id, str(e))
+    except Exception as e:
+      return self._create_error_response(query, session_id, str(e))
     
     def _create_fallback_response(self, query: str, session_id: str, agent_response: str) -> dict:
         """Create a fallback response when JSON parsing fails."""
@@ -470,15 +295,17 @@ class TripPlanningAgent:
 
 
 # Helper function to create trip planning agent instance
-def create_trip_agent(model: str = "gemini-2.0-flash-exp") -> TripPlanningAgent:
-    """
-    Create and return a TripPlanningAgent instance.
-    
-    Args:
-        model: The LLM model to use
-        
-    Returns:
-        TripPlanningAgent: Configured trip planning agent
-    """
-    print(Fore.BLUE + "Model used:", Fore.YELLOW + model)
-    return TripPlanningAgent(model=model)
+def create_trip_agent(model: str = "gemini-2.0-flash-exp", provider=None) -> TripPlanningAgent:
+  """
+  Create and return a TripPlanningAgent instance.
+
+  Args:
+    model: The LLM model to use
+
+  Returns:
+    TripPlanningAgent: Configured trip planning agent
+  """
+  print(Fore.BLUE + "Model used:", Fore.YELLOW + model)
+  if provider:
+    print(Fore.BLUE + "Provider:", Fore.YELLOW + str(provider))
+  return TripPlanningAgent(model=model, provider=provider)

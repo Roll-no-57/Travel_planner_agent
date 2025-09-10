@@ -6,7 +6,10 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-agent = create_trip_agent(model="gemini-1.5-flash")
+# Read provider and model from environment for easy switching (LLM_PROVIDER: gemini|groq)
+LLM_MODEL = os.environ.get("LLM_MODEL", "gemini-1.5-flash")
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER")  # optional
+agent = create_trip_agent(model=LLM_MODEL, provider=LLM_PROVIDER)
 
 @app.route('/travel', methods=['POST'])
 def travel_query():

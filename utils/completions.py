@@ -1,20 +1,30 @@
 import google.generativeai as genai
-from typing import Union, Optional
+from typing import Optional
+from groq import Groq
 
 def completions_create(client, messages: list, model: str) -> str:
     """
-    Sends a request to the Gemini client to interact with the language model.
+    Create a completion using either Gemini or Groq depending on the client type.
 
     Args:
-        client (GenerativeModel): The Gemini GenerativeModel client object
-        messages (list[dict]): A list of message objects containing chat history for the model.
-        model (str): The model to use for generating tool calls and responses.
+        client: google.generativeai.GenerativeModel or groq.Groq
+        messages (list[dict]): Chat history
+        model (str): Model name
 
     Returns:
-        str: The content of the model's response.
+        str: Assistant text output
     """
-    # Convert messages to Gemini format
-    # Combine all messages into a single prompt for Gemini
+    # If using Groq, pass through chat format
+    if isinstance(client, Groq):
+        # Groq expects OpenAI-style messages
+        response = client.chat.completions.create(messages=messages, model=model)
+        # Defensive access
+        try:
+            return str(response.choices[0].message.content)
+        except Exception:
+            return ""
+
+    # Otherwise, assume Gemini GenerativeModel
     prompt_parts = []
     for msg in messages:
         role = msg.get('role', 'user')
@@ -25,12 +35,10 @@ def completions_create(client, messages: list, model: str) -> str:
             prompt_parts.append(f"User: {content}")
         elif role == 'assistant':
             prompt_parts.append(f"Assistant: {content}")
-    
+
     full_prompt = "\n\n".join(prompt_parts)
-    
-    # Generate content using Gemini
     response = client.generate_content(full_prompt)
-    return str(response.text)
+    return str(getattr(response, 'text', '') or '')
 
 
 # def completions_create(client, messages: list, model: str) -> str:

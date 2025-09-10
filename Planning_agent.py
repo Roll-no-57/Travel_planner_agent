@@ -1,11 +1,11 @@
 import json
 import re
-from typing import Union, List
+from typing import Union, List, Optional
 
 from colorama import Fore
 from dotenv import load_dotenv
-# from groq import Groq
 import google.generativeai as genai
+from groq import Groq
 from tool_decorator import Tool
 from tool_decorator import validate_arguments
 from utils.completions import build_prompt_structure
@@ -16,7 +16,11 @@ from utils.extraction import extract_tag_content
 import os
 
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+# Configure Gemini only if an API key is present (keeps Groq-only setups clean)
+_GEMINI_API_KEY: Optional[str] = os.getenv("GEMINI_API_KEY")
+if _GEMINI_API_KEY:
+    genai.configure(api_key=_GEMINI_API_KEY)
 BASE_SYSTEM_PROMPT = ""
 
 
@@ -90,8 +94,27 @@ class ReactAgent:
         tools: Union[Tool, List[Tool]],
         model: str = "gemini-2.0-flash-exp",
         system_prompt: str = BASE_SYSTEM_PROMPT,
+        provider: Optional[str] = None,
     ) -> None:
-        self.client = genai.GenerativeModel(model)
+        # Determine provider: explicit param > env > infer from model name
+        env_provider = os.getenv("LLM_PROVIDER", "gemini").lower()
+        inferred_provider = (
+            "groq" if any(x in model.lower() for x in ["llama", "mixtral", "gemma", "groq"]) else "gemini"
+        )
+        self.provider = (provider or env_provider or inferred_provider).lower()
+
+        # Instantiate client per provider
+        if self.provider == "groq":
+            groq_key = os.getenv("GROQ_API_KEY")
+            if not groq_key:
+                raise ValueError("GROQ_API_KEY not set. Please add it to your .env when using LLM_PROVIDER=groq.")
+            self.client = Groq(api_key=groq_key)
+        else:
+            # Default to Gemini
+            if not _GEMINI_API_KEY:
+                raise ValueError("GEMINI_API_KEY not set. Please add it to your .env or set LLM_PROVIDER=groq.")
+            self.client = genai.GenerativeModel(model)
+
         self.model = model
         self.system_prompt = system_prompt
         self.tools = tools if isinstance(tools, list) else [tools]
