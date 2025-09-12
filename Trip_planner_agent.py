@@ -27,9 +27,9 @@ class TripPlanningAgent:
     """
     # Define all trip planning-related tools
     self.tools = [
-      # get_activity_tool,
-      # get_hotels_tool,
-      get_multimodal_capability,  # Temporarily disabled
+      get_activity_tool,
+      get_hotels_tool,
+      get_multimodal_capability,
       get_raw_website_content_tool,
       get_search_results_tool,
       get_image_search_results_tool,
@@ -58,7 +58,6 @@ class TripPlanningAgent:
         {
           
             "message": "I'm doing great! How about you? Where are you planning to go?",
-            "Requirement_options": [],
             "intent": "general_conversation",
             "sessionId": "provided session ID or generate one",
             "timestamp": "current ISO timestamp",
@@ -85,14 +84,11 @@ class TripPlanningAgent:
         REQUIREMENT COLLECTION RESPONSE FORMAT
         =========================
         {
-          
             "message": "Hey, before creating your itinerary, could you tell me how many days you plan to stay?",
-            "Requirement_options": ["1 day", "2 days", "3 days"],
             "intent": "requirement_collection",
             "sessionId": "provided session ID or generate one",
             "timestamp": "current ISO timestamp",
             "itinerary": {}
-          
         }
 
         =========================
@@ -101,7 +97,6 @@ class TripPlanningAgent:
         Once all requirements are collected, generate the final itinerary as follows:
 
         {
-          
             "itinerary": {
               "Cities": [
                 {
@@ -172,11 +167,9 @@ class TripPlanningAgent:
               }
             },
             "message": "Conversational summary of the trip for the user",
-            "Requirement_options": ["extracted user preferences/requirements"],
             "intent": "trip_planning",
             "sessionId": "provided session ID or generate one",
             "timestamp": "current ISO timestamp"
-          
         }
 
         =========================
