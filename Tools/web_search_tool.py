@@ -1,7 +1,6 @@
 import json
 import requests
-# from tool_decorator import tool
-from crewai.tools import tool
+from tool_decorator import tool
 from dotenv import load_dotenv
 import os
 
