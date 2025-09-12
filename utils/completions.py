@@ -14,13 +14,40 @@ def completions_create(client, messages: list, model: str) -> str:
     Returns:
         str: Assistant text output
     """
+    # Define stop sequences to prevent model from continuing after tool calls
+    stop_sequences = [
+        "</tool_call>",
+        "(Assume",
+        "assume",
+        "In a real implementation",
+        "fake data",
+        "example.com",
+        "placeholder"
+    ]
+    
     # If using Groq, pass through chat format
     if isinstance(client, Groq):
         # Groq expects OpenAI-style messages
-        response = client.chat.completions.create(messages=messages, model=model)
+        response = client.chat.completions.create(
+            messages=messages, 
+            model=model,
+            stop=stop_sequences[:4]  # Groq has limits on stop sequences
+        )
         # Defensive access
         try:
-            return str(response.choices[0].message.content)
+            content = str(response.choices[0].message.content)
+            # Additional post-processing to cut off at first simulation indicator
+            for stop_word in stop_sequences:
+                if stop_word.lower() in content.lower():
+                    idx = content.lower().find(stop_word.lower())
+                    if stop_word == "</tool_call>":
+                        # Include the closing tag
+                        content = content[:idx + len(stop_word)]
+                    else:
+                        # Cut off before the simulation indicator
+                        content = content[:idx].strip()
+                    break
+            return content
         except Exception:
             return ""
 
@@ -37,8 +64,24 @@ def completions_create(client, messages: list, model: str) -> str:
             prompt_parts.append(f"Assistant: {content}")
 
     full_prompt = "\n\n".join(prompt_parts)
+    
+    # For Gemini, we can't use stop sequences in the same way, so we'll post-process
     response = client.generate_content(full_prompt)
-    return str(getattr(response, 'text', '') or '')
+    content = str(getattr(response, 'text', '') or '')
+    
+    # Post-process to remove simulation content
+    for stop_word in stop_sequences:
+        if stop_word.lower() in content.lower():
+            idx = content.lower().find(stop_word.lower())
+            if stop_word == "</tool_call>":
+                # Include the closing tag
+                content = content[:idx + len(stop_word)]
+            else:
+                # Cut off before the simulation indicator
+                content = content[:idx].strip()
+            break
+    
+    return content
 
 
 # def completions_create(client, messages: list, model: str) -> str:

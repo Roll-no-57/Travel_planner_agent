@@ -30,16 +30,23 @@ You are provided with function signatures within <tools></tools> XML tags.
 You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug
 into functions. Pay special attention to the properties 'types'. You should use those types as in a Python dict.
 
-CRITICAL: You MUST always use the required XML tags in your responses. Follow these patterns exactly:
+CRITICAL INSTRUCTIONS:
+1. You MUST use the required XML tags in your responses 
+2. When you make tool calls, you MUST STOP and WAIT for the tool results
+3. NEVER simulate or fake tool responses - always wait for actual tool execution
+4. NEVER continue generating text after making tool calls
+5. NEVER create placeholder or example data
 
-PATTERN 1 - When you need to use tools:
+REQUIRED PATTERNS:
+
+PATTERN 1 - When you need to use tools (STOP AFTER THIS):
 <thought>Your reasoning about what you need to do</thought>
 <tool_call>{"name": "function_name", "arguments": {"param": "value"}, "id": 0}</tool_call>
 
 PATTERN 2 - When you have the final answer:
 <response>Your complete answer to the user's question</response>
 
-NEVER respond without using one of these patterns. The XML tags are mandatory.
+IMPORTANT: After making tool calls, you MUST STOP and WAIT. Do not generate any additional text. Do not simulate results.
 
 For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
 
@@ -59,7 +66,7 @@ Example session:
 <thought>I need to get the current weather in Madrid</thought>
 <tool_call>{"name": "get_current_weather","arguments": {"location": "Madrid", "unit": "celsius"}, "id": 0}</tool_call>
 
-You will be called again with this:
+[SYSTEM WILL EXECUTE TOOL AND PROVIDE RESULTS]
 
 <observation>{0: {"temperature": 25, "unit": "celsius"}}</observation>
 
@@ -73,6 +80,8 @@ Additional constraints:
 - Always include <thought> tags when using tools to explain your reasoning
 - Use incrementing IDs for multiple tool calls (0, 1, 2, etc.)
 - Never respond without using the required XML tag structure
+- NEVER generate fake data or simulate tool responses
+- ALWAYS wait for actual tool execution results
 """
 
 
@@ -255,8 +264,20 @@ class ReactAgent:
                         print(Fore.RED + f"\nLLM didn't follow the expected format in round {round_num + 1}")
                         print(Fore.RED + f"Raw response: {completion}")
                         
-                        # Guide the LLM back to the correct format
-                        format_correction = """Please follow the required format. You must use one of these patterns:
+                        # Check if the model is trying to simulate tool responses
+                        if "assume" in completion.lower() or "example.com" in completion.lower() or "fake" in completion.lower():
+                            print(Fore.RED + "\n🚨 DETECTED MODEL SIMULATION! The model is creating fake tool responses instead of waiting for real execution.")
+                            format_correction = """STOP! You are simulating tool responses instead of using real tools.
+
+You MUST NOT create fake data or assume tool results. Instead:
+
+1. Make tool calls using the XML format: <tool_call>{"name": "function_name", "arguments": {...}, "id": 0}</tool_call>
+2. STOP and WAIT for the system to execute the tool
+3. Only respond with <response> when you have REAL data from tool execution
+
+Please start over and make real tool calls without simulating results."""
+                        else:
+                            format_correction = """Please follow the required format. You must use one of these patterns:
 
                             1. If you need to use tools, structure your response like this:
                             <thought>Your reasoning about what you need to do</thought>
