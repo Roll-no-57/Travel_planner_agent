@@ -39,7 +39,7 @@ def get_hotels_tool(location: str, checkinDate: str, checkoutDate: str, max_item
             "includeTags": False,
             "includeVacationRentals": False,
             "language": "en",
-            "maxItemsPerQuery": max_items,
+            "maxItemsPerQuery": 1,
             "query": location
         }
         
@@ -88,8 +88,8 @@ def get_hotels_tool(location: str, checkinDate: str, checkoutDate: str, max_item
                 "number_of_reviews": item.get("numberOfReviews", 0),
                 "rating": rating_float,
                 "price_range": item.get("priceRange"),
-                "amenities": item.get("amenities"),
-                "image_urls": item.get("photos", [])[:5] if item.get("photos") else []
+                "amenities": item.get("amenities", [])[:10],
+                "image_urls": item.get("photos", [])[:3] if item.get("photos") else []
             }
             hotels.append(hotel)
 

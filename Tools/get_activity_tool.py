@@ -27,7 +27,7 @@ def get_activity_tool(location: str, max_items: int = 3) -> str:
         # Prepare the Actor input
         run_input = {
             "query": location,
-            "maxItemsPerQuery": max_items,
+            "maxItemsPerQuery": 3,
             "includeTags": False,
             "includeNearbyResults": False,
             "includeAttractions": True,
@@ -86,7 +86,7 @@ def get_activity_tool(location: str, max_items: int = 3) -> str:
                 },
                 "NumberOfReviews": item.get("numberOfReviews", 0),
                 "Rating": rating_float,
-                "image_urls": item.get("photos", [])[:5] if item.get("photos") else []
+                "image_urls": item.get("photos", [])[:3] if item.get("photos") else []
             }
             activities.append(activity)
             # print(activity)

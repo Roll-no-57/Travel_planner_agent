@@ -30,211 +30,14 @@ class TripPlanningAgent:
     self.tools = [
       get_activity_tool,
       get_hotels_tool,
-      # get_multimodal_capability,
+      get_multimodal_capability,
       # get_raw_website_content_tool,
       # get_search_results_tool,
       get_image_search_results_tool,
-      # get_weather_info,
+      get_weather_info,
       # get_place_search_results_tool
     ]
 
-    # self.system_prompt = """
-    # You are an intelligent multi-purpose trip planning assistant. 
-    # Your primary role is to **understand the intent of the user query** and respond accordingly. You will be provided with some previous conversation history with the user if available. Analyze those as well to get context about the user. 
-    # You have access to tools for search, scraping, images, multimodal understanding, weather, and place lookup.
-
-    #     =========================
-    #     CRITICAL: NEVER SIMULATE TOOL RESPONSES
-    #     =========================
-    #     - NEVER create fake or example data
-    #     - NEVER use placeholder URLs like "https://example.com"
-    #     - ALWAYS wait for actual tool execution results
-    #     - You MUST use real data from actual tool responses for any kind of urls like image_urls or booking_url
-
-    #     =========================
-    #     MANDATORY TOOL USAGE WORKFLOW
-    #     =========================
-    #     For EVERY trip planning request, you MUST follow this exact sequence:
-        
-    #     1. **HOTELS/ACCOMMODATION PHASE**: 
-    #       - Use get_place_search_results_tool,get_search_results_tool,get_raw_website_content_tool 
-    #       - Extract hotel information including: name, description, address, geocode, rating, review count, phone number, amenities, website, price, booking links
-
-    #     2. **ACTIVITIES PHASE**: 
-    #       - Use get_place_search_results_tool,get_search_results_tool,get_raw_website_content_tool 
-    #       - Extract activities, attractions, and restaurants with same structured details
-        
-    #     3. **BOOKING INFORMATION PHASE**: 
-    #       - Use get_search_results_tool,get_raw_website_content_tool to scrape official websites for:
-    #         * Direct booking URLs from hotel websites
-    #         * Ticket booking links from attraction websites
-    #         * Contact information, prices, and detailed amenities
-    #         * Prefer links from booking.com, tripadvisor.com, etc.
-        
-    #     4. **IMAGE PHASE**: Use get_image_search_results_tool to get AT LEAST 3 image URLs for:
-    #       - Each hotel/accommodation (search: "hotel_name city")
-    #       - Each activity/attraction (search: "activity_name city") 
-    #       - Destination overview (search: "destination_city attractions")
-          
-    #     CRITICAL: You MUST use these tools in sequence and extract real URLs. Never use placeholder URLs.
-
-    #     =========================
-    #     INTENT CLASSIFICATION
-    #     =========================
-    #     - If the user greets you or asks general/non-travel questions → respond in JSON with intent = `general_conversation`.
-    #     - If the user asks to **plan a trip** → ensure all required information is collected first, then use the MANDATORY TOOL WORKFLOW.
-    #     - If the user provides an **image URL and asks about the location** → first use the multimodal tool to analyze the image, then continue planning.
-    #     - If the user asks about specific destinations, hotels, or activities → use the MANDATORY TOOL WORKFLOW.
-
-    #     =========================
-    #     GENERAL CONVERSATION RESPONSE FORMAT
-    #     =========================
-    #     When intent = `general_conversation`, always respond like this:
-    #     {
-    #         "message": "I'm doing great! How about you? Where are you planning to go?",
-    #         "intent": "general_conversation",
-    #         "sessionId": "provided session ID or generate one",
-    #         "timestamp": "current ISO timestamp",
-    #         "itinerary": {}
-    #     }
-
-    #     =========================
-    #     TRIP REQUIREMENTS
-    #     =========================
-    #     For **trip_planning**, the user must provide:
-    #     - Start location
-    #     - Destination
-    #     - Number of days
-    #     - Group size (people count)
-    #     - Budget range  
-
-    #     If any requirement is missing:
-    #     - Ask the user for the missing information.
-    #     - Response should follow the **Requirement Collection JSON** format (no itinerary yet).
-
-    #     =========================
-    #     REQUIREMENT COLLECTION RESPONSE FORMAT
-    #     =========================
-    #     {
-    #         "message": "Hey, before creating your itinerary, could you tell me how many days you plan to stay?",
-    #         "intent": "requirement_collection",
-    #         "sessionId": "provided session ID or generate one",
-    #         "timestamp": "current ISO timestamp",
-    #         "itinerary": {}
-    #     }
-
-    #     =========================
-    #     TRIP PLANNING RESPONSE FORMAT
-    #     =========================
-    #     Once all requirements are collected, use the MANDATORY TOOL WORKFLOW and generate:
-
-    #     {
-    #         "itinerary": {
-    #           "Cities": [
-    #             {
-    #               "travel": {
-    #                 "from": "departure location",
-    #                 "to": "arrival city",
-    #                 "estimate_time": 0,
-    #                 "estimate_price": 0,
-    #                 "option": "flight/train/bus/car"
-    #               },
-    #               "Accomodation": {
-    #                 "name": "hotel name (from get_place_search_results_tool)",
-    #                 "description": "detailed description (from search + scraping)",
-    #                 "address": "full address (from place tool)",
-    #                 "geocode": {
-    #                   "latitude": 0.0,
-    #                   "longitude": 0.0
-    #                 },
-    #                 "rating": 0,
-    #                 "review_count": 0,
-    #                 "phone": "contact number (from place tool or scrape)",
-    #                 "amenities": ["amenities list (from scraping or place info)"],
-    #                 "price": {
-    #                   "amount": 0,
-    #                   "currency": "USD"
-    #                 },
-    #                 "guests": 0,
-    #                 "image_urls": ["MINIMUM 3 real URLs from image search tool"],
-    #                 "booking_url": "REAL reservation link (from place tool/search/scrape)"
-    #               },
-    #               "days": [
-    #                 {
-    #                   "title": "Day title",
-    #                   "date": "YYYY-MM-DD",
-    #                   "description": "day description",
-    #                   "day_number": "Day 1",
-    #                   "activities": [
-    #                     {
-    #                       "tag": "category",
-    #                       "title": "activity name (from get_place_search_results_tool)",
-    #                       "description": "detailed description (from search + scraping)",
-    #                       "minimum_duration": "time needed",
-    #                       "booking_url": "REAL booking link (from place tool/search/scrape) or 'Contact directly'",
-    #                       "address": "activity address (from place tool)",
-    #                       "NumberOfReview": 0,
-    #                       "Ratings": 0.0,
-    #                       "geocode": {
-    #                         "latitude": 0.0,
-    #                         "longitude": 0.0
-    #                       },
-    #                       "image_urls": ["MINIMUM 3 real URLs from image search tool"]
-    #                     }
-    #                   ]
-    #                 }
-    #               ]
-    #             }
-    #           ],
-    #           "overview": {
-    #             "start_location": "departure city/location",
-    #             "destination_location": "main destination or 'Multiple Cities'",
-    #             "summary": "brief trip summary",
-    #             "duration_days": 0,
-    #             "people_count": 0,
-    #             "start_date": "YYYY-MM-DD",
-    #             "end_date": "YYYY-MM-DD", 
-    #             "image_urls": ["MINIMUM 3 real URLs from image search tool for destination"],
-    #             "Estimated_overall_cost": 0
-    #           }
-    #         },
-    #         "message": "Conversational summary of the trip for the user",
-    #         "intent": "trip_planning",
-    #         "sessionId": "provided session ID or generate one",
-    #         "timestamp": "current ISO timestamp"
-    #     }
-
-    #     =========================
-    #     CRITICAL RULES FOR IMAGE URLS AND BOOKING URLS
-    #     =========================
-        
-    #     **IMAGE URLS - MANDATORY STEPS:**
-    #     1. ALWAYS use get_image_search_results_tool for every image_urls field
-    #     2. Search queries MUST be specific: "hotel_name city", "activity_name city", "destination_city attractions"
-    #     3. MINIMUM 3 image URLs for each: hotels, activities, and overview
-    #     4. Use the actual URLs returned by the tool - NEVER use placeholders like "https://example.com"
-        
-    #     **BOOKING URLS - MANDATORY STEPS:**
-    #     1. FIRST use get_place_search_results_tool for websites and structured data
-    #     2. THEN use get_search_results_tool to find additional booking websites with queries like: "book [hotel_name] [city]", "[activity_name] [city] tickets booking"
-    #     3. Extract booking URLs from search results and tool responses
-    #     4. If still no booking URL, provide official website URL or write "Contact directly: [phone/email]"
-        
-    #     **NEVER LEAVE EMPTY OR NULL:**
-    #     - image_urls: Must have minimum 3 real URLs from image search
-    #     - booking_url: Must have real URL or contact information
-    #     - All other fields: Use realistic data or sensible defaults
-        
-    #     **TOOL USAGE PRIORITY:**
-    #     1. get_place_search_results_tool for structured place info
-    #     2. get_search_results_tool for general web information
-    #     3. get_raw_website_content_tool for detailed scraping
-    #     4. get_image_search_results_tool for all visual content
-    #     5. get_multimodal_capability for image analysis if user provides one
-    #     6. get_weather_info for weather-related queries
-        
-    #     Remember: The user specifically wants proper image URLs and booking URLs. This is the MOST IMPORTANT requirement.
-    # """
     self.system_prompt = """
 You are a specialized trip planning assistant. 
 Your job is to understand the user query and return structured trip plans. 
@@ -256,6 +59,7 @@ CRITICAL RULES
 - ALWAYS return real URLs from the tools.
 - If a booking_url is not found, provide "Contact directly" with phone/email if available.
 - All image_urls fields MUST contain at least 3 real URLs from get_image_urls_tool.
+- If user provides any image_url in the query and asks something about it, use get_multimodal_capability tool to analyze it and answer the question.
 
 =========================
 INTENT CLASSIFICATION
@@ -263,29 +67,22 @@ INTENT CLASSIFICATION
 - If the user greets you or asks general/non-travel questions → respond with intent = "general_conversation".
 - If the user asks to plan a trip → collect all required info first, then build an itinerary.
 - If required info is missing (start location, destination, days, people count, budget) → respond with intent = "requirement_collection".
+- If user asks any weather related questions → respond with intent = "weather_inquiry" and provide brief weather info using get_weather_info tool and the response format below.
+
 
 =========================
 RESPONSE FORMATS
 =========================
-1. General Conversation:
+1. General Conversation/ Requirement Collection/weather Inquiry:
 {
-  "message": "I'm doing great! How about you? Where are you planning to go?",
-  "intent": "general_conversation",
+  "message": "I'm doing great! How about you? Where are you planning to go?"/"Hey, before creating your itinerary, could you tell me how many days you plan to stay?"/"The weather in {location} is {weather_info}.",
+  "intent": "general_conversation"/"requirement_collection"/"weather_inquiry",
   "sessionId": "provided session ID or generate one",
   "timestamp": "current ISO timestamp",
   "itinerary": {}
 }
 
-2. Requirement Collection:
-{
-  "message": "Hey, before creating your itinerary, could you tell me how many days you plan to stay?",
-  "intent": "requirement_collection",
-  "sessionId": "provided session ID or generate one",
-  "timestamp": "current ISO timestamp",
-  "itinerary": {}
-}
-
-3. Trip Planning (once all requirements are collected):
+2. Trip Planning (once all requirements are collected):
 {
   "itinerary": {
     "Cities": [
@@ -384,15 +181,10 @@ RESPONSE FORMATS
 User Query: {query}
 
 CRITICAL INSTRUCTIONS FOR THIS REQUEST:
-1. You MUST use get_place_search_results_tool to find hotels, activities, and attractions with detailed information and booking links
-2. You MUST use get_search_results_tool as backup to find additional booking websites, reviews, or details
-3. You MUST use get_raw_website_content_tool to scrape detailed information and booking URLs from official websites
-4. You MUST use get_image_search_results_tool to get minimum 3 image URLs for every hotel, activity, and destination overview
-5. NEVER use placeholder URLs or empty fields
-6. Follow the exact JSON format specified in your system prompt
-7. Ensure every booking_url field contains a real URL or contact information
-8. Ensure every image_urls field contains minimum 3 real image URLs from the image search tool
-
+You will be provided some previous conversation history and context analyze them and answer the user query accordingly.
+1. You MUST use get_image_search_results_tool to get minimum 3 image URLs for  destination overview
+2. NEVER use placeholder URLs or empty fields
+3. Follow the exact JSON format specified in your system prompt
 Please create a comprehensive trip plan following these mandatory requirements."""
 
             response = self.agent.run(enhanced_query, max_rounds=25)
@@ -416,54 +208,50 @@ Please create a comprehensive trip plan following these mandatory requirements."
                 
     except Exception as e:
       return self._create_error_response(query, session_id, str(e))
-    
-    def _create_fallback_response(self, query: str, session_id: str, agent_response: str) -> dict:
-        """Create a fallback response when JSON parsing fails."""
-        return {
-            "message": agent_response if agent_response else "I've created a basic trip plan for you. Please provide more specific details for a better itinerary.",
-            "Requirement_options": [query],
-            "intent": "trip_planning",
-            "sessionId": session_id,
-            "timestamp": datetime.now().isoformat(),
-            "itinerary": {
-                "overview": {
-                    "start_location": "Your Location",
-                    "destination_location": "Destination",
-                    "summary": "Custom trip plan based on your preferences",
-                    "duration_days": 3,
-                    "people_count": 1,
-                    "start_date": datetime.now().strftime('%Y-%m-%d'),
-                    "end_date": (datetime.now() + timedelta(days=3)).strftime('%Y-%m-%d'),
-                    "image_urls": [],
-                    "Estimated_overall_cost": 1500
-                },
-                "Cities": []
-            }
-        }
-    
-    def _create_error_response(self, query: str, session_id: str, error: str) -> dict:
-        """Create an error response."""
-        return {
-            "message": f"I apologize, but I encountered an error while planning your trip: {error}. Please try rephrasing your request.",
-            "Requirement_options": [query],
-            "intent": "trip_planning",
-            "sessionId": session_id,
-            "timestamp": datetime.now().isoformat(),
-            "itinerary": {
-                "overview": {
-                    "start_location": "",
-                    "destination_location": "",
-                    "summary": "Error occurred during planning",
-                    "duration_days": 0,
-                    "people_count": 0,
-                    "start_date": "",
-                    "end_date": "",
-                    "image_urls": [],
-                    "Estimated_overall_cost": 0
-                },
-                "Cities": []
-            }
-        }
+  
+  def _create_fallback_response(self, query: str, session_id: str, agent_response: str) -> dict:
+      """Load the saved fallback JSON if agent output is invalid."""
+      try:
+          with open("fall_back_res.txt", "r", encoding="utf-8") as f:
+              saved_fallback = json.load(f)
+              # Update sessionId and timestamp for consistency
+              saved_fallback["sessionId"] = session_id
+              saved_fallback["timestamp"] = datetime.now().isoformat()
+              return saved_fallback
+      except Exception as file_error:
+          # If file fails to load, at least return minimal structure
+          return {
+              "message": f"Agent response invalid, and failed to load fallback file: {file_error}",
+              "intent": "trip_planning",
+              "sessionId": session_id,
+              "timestamp": datetime.now().isoformat(),
+              "itinerary": {}
+          }
+
+  
+  def _create_error_response(self, query: str, session_id: str, error: str) -> dict:
+      """Create an error response."""
+      return {
+          "message": f"I apologize, but I encountered an error while planning your trip: {error}. Please try rephrasing your request.",
+          "Requirement_options": [query],
+          "intent": "trip_planning",
+          "sessionId": session_id,
+          "timestamp": datetime.now().isoformat(),
+          "itinerary": {
+              "overview": {
+                  "start_location": "",
+                  "destination_location": "",
+                  "summary": "Error occurred during planning",
+                  "duration_days": 0,
+                  "people_count": 0,
+                  "start_date": "",
+                  "end_date": "",
+                  "image_urls": [],
+                  "Estimated_overall_cost": 0
+              },
+              "Cities": []
+          }
+      }
 
 
 # Helper function to create trip planning agent instance

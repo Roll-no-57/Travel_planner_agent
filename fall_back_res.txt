@@ -1,0 +1,571 @@
+{"response":
+
+  {
+    "message": "Okay, I have created a 4-day trip to Switzerland from America for you. The trip starts on July 9, 2025, and ends on July 13, 2025. You will be visiting Zurich, Lucerne, Interlaken, and Bern.",
+    "Requirement_options": [
+      "low budget",
+      "medium budget",
+      "high budget"
+    ],
+    "intent": "trip_planning",
+    "sessionId": "session_default",
+    "timestamp": "2024-07-04T17:19:39.365Z",
+    "itinerary": {
+      "overview": {
+        "start_location": "USA",
+        "destination_location": "Switzerland",
+        "summary": "A 4-day trip to Switzerland visiting Zurich, Lucerne, Interlaken, and Bern.",
+        "duration_days": 4,
+        "people_count": 1,
+        "start_date": "2025-07-09",
+        "end_date": "2025-07-13",
+        "image_urls": [
+          "https://i.ibb.co/mCpWYktB/photobook-back-cover.jpg",
+          "https://i.ibb.co/qLv24J72/photobook-front-cover.jpg",
+          "https://i.ibb.co/84d01BxR/laura-college-K-Na5g-Cmh38-unsplash-jpg.jpg"
+        ],
+        "Estimated_overall_cost": 2500
+      },
+      "Cities": [
+        {
+          "travel": {
+            "from": "USA",
+            "to": "Zurich",
+            "estimate_time": 8,
+            "estimate_price": 800,
+            "option": "flight"
+          },
+          "Accomodation": {
+            "name": "Baur au Lac",
+            "description": "Luxury hotel in a peaceful garden setting near Lake Zurich and the financial district. Offers elegant rooms, fine dining, a spa, and attentive service. Convenient for exploring the city and enjoying lakeside views.",
+            "address": "Talstrasse 1, Zurich 8001 Switzerland",
+            "geocode": {
+              "latitude": 47.367,
+              "longitude": 8.539
+            },
+            "rating": 4.5,
+            "review_count": 790,
+            "phone": "+41 44 220 50 20",
+            "amenities": [
+              "Room service",
+              "Restaurant",
+              "Pets Allowed",
+              "Wheelchair access",
+              "Internet",
+              "Free Internet",
+              "Bar/Lounge",
+              "Wifi",
+              "Free Wifi",
+              "Suites",
+              "Dry Cleaning",
+              "Meeting rooms",
+              "Non-smoking rooms",
+              "Laundry Service",
+              "Banquet Room",
+              "Air conditioning",
+              "Family Rooms",
+              "Multilingual Staff",
+              "Accessible rooms",
+              "Minibar"
+            ],
+            "price": {
+              "amount": 800,
+              "currency": "USD"
+            },
+            "guests": 2,
+            "image_urls": [
+              "https://media-cdn.tripadvisor.com/media/photo-o/1b/69/e4/7b/familiy-suite.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/0c/f4/96/e9/bolero-restaurante.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/1a/3f/c3/75/cascada-hotel.jpg"
+            ],
+            "booking_url": "https://www.tripadvisor.com/Hotel_Review-g188113-d195458-Reviews-Baur_au_Lac-Zurich.html"
+          },
+          "days": [
+            {
+              "title": "Arrival in Zurich and Old Town Exploration",
+              "date": "2025-07-09",
+              "description": "Arrive in Zurich, check into the hotel, and explore the charming Old Town.",
+              "day_number": "Day 1",
+              "activities": [
+                {
+                  "tag": "attraction",
+                  "title": "Lake Zurich",
+                  "description": "Lake Zurich offers a peaceful and relaxing environment with beautiful views, perfect for a summer evening. It is camera-friendly and recommended for visitors seeking a tranquil experience.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188113-d285099-Reviews-Lake_Zurich-Zurich.html",
+                  "address": "Zurich Switzerland",
+                  "NumberOfReview": 6123,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 47.3769,
+                    "longitude": 8.5417
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/0b/4f/65/c8/photo1jpg.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/97/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/96/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Old Town",
+                  "description": "Old Town features cobblestone streets, shops, and many fountains, offering a fun walking experience. Visitors can easily get lost in the neighborhoods, but it adds to the charm.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188113-d196025-Reviews-Old_Town-Zurich.html",
+                  "address": "Zurich Switzerland",
+                  "NumberOfReview": 6399,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 47.3769,
+                    "longitude": 8.5417
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/08/b8/0b/5a/lake-luzern.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/7a/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/74/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Uetliberg",
+                  "description": "Uetliberg offers spectacular views over the city and hiking possibilities. Note that train services may involve replacement buses, such as Route EV1 and EV2, until October 2025.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188113-d196024-Reviews-Uetliberg-Zurich.html",
+                  "address": "Zurich Switzerland",
+                  "NumberOfReview": 2574,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 47.3769,
+                    "longitude": 8.5417
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/16/06/fc/95/pilatus-aussblick.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f6/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f5/caption.jpg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "travel": {
+            "from": "Zurich",
+            "to": "Lucerne",
+            "estimate_time": 1,
+            "estimate_price": 30,
+            "option": "train"
+          },
+          "Accomodation": {
+            "name": "Cascada Boutique Hotel",
+            "description": "We are centrally located in the trendy Lucerne Neustadt district, within walking distance of the train station, Lake Lucerne and the old town. Your stay will be in one of our 74 modern, boutique-style rooms, each one individually designed around the theme of Swiss waterfalls. Rounding out the offering is the BOLERO Restaurante, well-known throughout the city, where a rich breakfast buffet awaits you. And at lunch and in the evening you can enjoy Spanish specialty dishes and select wines and gins at the bar. 74 Waterfall Rooms: The boutique styling is complemented by air conditioning and extremely comfortable new beds in all rooms. We are pleased to fill your minibar daily with beverages at no extra charge. CASCADA Boutique Hotel – the ideal place for your stay in Lucerne and a superb springboard to the Swiss Alps.",
+            "address": "Bundesplatz 18, Lucerne 6003 Switzerland",
+            "geocode": {
+              "latitude": 47.04619,
+              "longitude": 8.309397
+            },
+            "rating": 4.5,
+            "review_count": 1893,
+            "phone": "01141415391588",
+            "amenities": [
+              "Room service",
+              "Restaurant",
+              "Pets Allowed",
+              "Wheelchair access",
+              "Internet",
+              "Free Internet",
+              "Bar/Lounge",
+              "Wifi",
+              "Free Wifi",
+              "Suites",
+              "Dry Cleaning",
+              "Meeting rooms",
+              "Non-smoking rooms",
+              "Laundry Service",
+              "Banquet Room",
+              "Air conditioning",
+              "Family Rooms",
+              "Multilingual Staff",
+              "Accessible rooms",
+              "Minibar"
+            ],
+            "price": {
+              "amount": 262,
+              "currency": "USD"
+            },
+            "guests": 2,
+            "image_urls": [
+              "https://media-cdn.tripadvisor.com/media/photo-o/1b/69/e4/7b/familiy-suite.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/0c/f4/96/e9/bolero-restaurante.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/1a/3f/c3/75/cascada-hotel.jpg"
+            ],
+            "booking_url": "https://www.tripadvisor.com/Hotel_Review-g188064-d228134-Reviews-Cascada_Boutique_Hotel-Lucerne.html"
+          },
+          "days": [
+            {
+              "title": "Arrival in Lucerne and Old Town Exploration",
+              "date": "2025-07-10",
+              "description": "Arrive in Lucerne, check into the hotel, and explore the charming Old Town.",
+              "day_number": "Day 2",
+              "activities": [
+                {
+                  "tag": "attraction",
+                  "title": "Luzern Altstadt",
+                  "description": "Explore the charming old town of Lucerne with its historic buildings and cobblestone streets.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188064-d267684-Reviews-Luzern_Altstadt-Lucerne.html",
+                  "address": "Lowengraben 8, Lucerne 6004 Switzerland",
+                  "NumberOfReview": 3020,
+                  "Ratings": 4.6,
+                  "geocode": {
+                    "latitude": 47.05206,
+                    "longitude": 8.304907
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/0b/4f/65/c8/photo1jpg.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/97/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/96/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Lake Lucerne",
+                  "description": "Take a scenic boat ride on Lake Lucerne and enjoy the stunning views of the surrounding mountains.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188064-d246215-Reviews-Lake_Lucerne-Lucerne.html",
+                  "address": "Lucerne Switzerland",
+                  "NumberOfReview": 5294,
+                  "Ratings": 4.7,
+                  "geocode": {
+                    "latitude": 47.0514,
+                    "longitude": 8.310155
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/08/b8/0b/5a/lake-luzern.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/7a/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/74/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Pilatus Luzern",
+                  "description": "Visit mount Pilatus by taking a scenic cogwheel train ride.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g1124758-d3233666-Reviews-Pilatus_Luzern-Kriens_Lucerne.html",
+                  "address": "Schlossweg 1, Kriens, Lucerne 6010 Switzerland",
+                  "NumberOfReview": 6296,
+                  "Ratings": 4.7,
+                  "geocode": {
+                    "latitude": 47.03046,
+                    "longitude": 8.27795
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/16/06/fc/95/pilatus-aussblick.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f6/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f5/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Chapel Bridge",
+                  "description": "The Chapel Bridge is a covered wooden footbridge spanning the river Reuss diagonally in the city of Lucerne in central Switzerland. Named after the nearby St. Peter's Chapel, the bridge is unique in containing a number of interior paintings dating back to the 17th century, although many of them were destroyed along with a larger part of the centuries-old bridge in a 1993 fire.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188064-d195605-Reviews-Chapel_Bridge-Lucerne.html",
+                  "address": "Kapellbrucke, Lucerne Switzerland",
+                  "NumberOfReview": 6451,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 47.0514,
+                    "longitude": 8.3074
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/0b/4f/65/c8/photo1jpg.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/97/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/96/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Lion Monument",
+                  "description": "The Lion Monument, or the Lion of Lucerne, is a rock relief in Lucerne, Switzerland, designed by Bertel Thorvaldsen and hewn in 1820–21 by Lukas Ahorn. It commemorates the Swiss Guards who were massacred in 1792 during the French Revolution, when revolutionaries stormed the Tuileries Palace in Paris.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188064-d195611-Reviews-Lion_Monument-Lucerne.html",
+                  "address": "Denkmalstrasse 4, Lucerne 6002 Switzerland",
+                  "NumberOfReview": 4619,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 47.058,
+                    "longitude": 8.311
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/08/b8/0b/5a/lake-luzern.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/7a/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/74/caption.jpg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "travel": {
+            "from": "Lucerne",
+            "to": "Interlaken",
+            "estimate_time": 2,
+            "estimate_price": 40,
+            "option": "train"
+          },
+          "Accomodation": {
+            "name": "Hotel Interlaken",
+            "description": "Dating back to the 14th century, Hotel Interlaken offers a unique mix of old and new, and has been carefully renovated over the past few years. A historical building combined with modern facilities makes this hotel a one-of-a-kind experience. Here the focus is on genuine hospitality, a family-friendly atmosphere and Swiss cosiness. The Beutler family and team are looking forward to welcoming you.",
+            "address": "Hoheweg 74, Interlaken 3800 Switzerland",
+            "geocode": {
+              "latitude": 46.6885,
+              "longitude": 7.8635
+            },
+            "rating": 4.2,
+            "review_count": 870,
+            "phone": "+41 33 826 68 68",
+            "amenities": [
+              "Restaurant",
+              "Internet",
+              "Free Internet",
+              "Wifi",
+              "Free Wifi",
+              "Breakfast included",
+              "Room service",
+              "Business center",
+              "Public Wifi",
+              "Dry Cleaning",
+              "Meeting rooms",
+              "Non-smoking rooms",
+              "Laundry Service",
+              "Banquet Room",
+              "Air conditioning",
+              "Family Rooms"
+            ],
+            "price": {
+              "amount": 235,
+              "currency": "USD"
+            },
+            "guests": 2,
+            "image_urls": [
+              "https://media-cdn.tripadvisor.com/media/photo-o/08/50/94/1a/hotel-interlaken.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/0a/05/be/08/bathroom.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/0a/05/b4/9e/seminar-gerichtsali.jpg"
+            ],
+            "booking_url": "https://www.tripadvisor.com/Hotel_Review-g188081-d254228-Reviews-Hotel_Interlaken-Interlaken_Bernese_Oberland_Canton_of_Bern.html"
+          },
+          "days": [
+            {
+              "title": "Adventure in Interlaken",
+              "date": "2025-07-11",
+              "description": "Travel to Interlaken and experience the adventure capital of Switzerland.",
+              "day_number": "Day 3",
+              "activities": [
+                {
+                  "tag": "activity",
+                  "title": "Tandem Paragliding Experience from Interlaken",
+                  "description": "Paraglide above the Swiss Alp peaks on a tandem flight with transport from Interlaken.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/AttractionProductReview-g188081-d11457557-Tandem_Paragliding_Experience_from_Interlaken-Interlaken_Bernese_Oberland_Canton_o.html",
+                  "address": "Interlaken Switzerland",
+                  "NumberOfReview": 1590,
+                  "Ratings": 5.0,
+                  "geocode": {
+                    "latitude": 46.6885,
+                    "longitude": 7.8635
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/0a/8f/8b/f2.jpg",
+                    "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/0a/8f/8b/fa.jpg",
+                    "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/0b/17/10/fa.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Harder Kulm",
+                  "description": "Visit Harder Kulm for splendid views of Interlaken, Eiger Monch, Jungfrau, Thun, and Lake Brienz.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188081-d601702-Reviews-Harder_Kulm-Interlaken_Bernese_Oberland_Canton_of_Bern.html",
+                  "address": "Hoheweg 35, Interlaken 3800 Switzerland",
+                  "NumberOfReview": 2551,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 46.697334,
+                    "longitude": 7.851659
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/10/36/a7/a0/harder-kulm.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/12/b1/d9/3b/harder-kulm.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/12/b1/d9/35/harder-kulm.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "OUTDOOR - Interlaken Base",
+                  "description": "Participate in outdoor activities such as canyoning, rafting, and e-bike tours.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g1130522-d2019117-Reviews-OUTDOOR_Interlaken_Base-Wilderswil_Interlaken_Bernese_Oberland_Canton_of_Bern.html",
+                  "address": "Industriestrasse 17, Wilderswil, Interlaken 3812 Switzerland",
+                  "NumberOfReview": 1871,
+                  "Ratings": 4.8,
+                  "geocode": {
+                    "latitude": 46.670982,
+                    "longitude": 7.879257
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/20/fe/8a/0a/outdoorch.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/02/1c/97/96/canyoning-ticino-expedition.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/2f/8a/c6/8d/scenic-e-bike-tour-interlaken.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Jungfraujoch",
+                  "description": "Jungfraujoch is a saddle in the Bernese Alps, connecting the two four-thousander peaks Jungfrau and Mönch, at an elevation of 3,466 metres above sea level. It is the site of the highest railway station in Europe.",
+                  "minimum_duration": "3-4 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188081-d592306-Reviews-Jungfraujoch-Interlaken_Bernese_Oberland_Canton_of_Bern.html",
+                  "address": "Jungfraujoch Switzerland",
+                  "NumberOfReview": 4185,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 46.547,
+                    "longitude": 7.979
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/10/36/a7/a0/harder-kulm.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/12/b1/d9/3b/harder-kulm.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/12/b1/d9/35/harder-kulm.jpg"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "travel": {
+            "from": "Interlaken",
+            "to": "Bern",
+            "estimate_time": 1,
+            "estimate_price": 30,
+            "option": "train"
+          },
+          "Accomodation": {
+            "name": "Bellevue Palace Bern",
+            "description": "Centrally located in Bern's old town near shops, dining, and historic sites. Offers spacious rooms, some with balconies, rooftop bar with city views, parking discounts, and in-room amenities like coffee machines.",
+            "address": "Kochergasse 3-5, Bern 3011 Switzerland",
+            "geocode": {
+              "latitude": 46.947,
+              "longitude": 7.447
+            },
+            "rating": 4.5,
+            "review_count": 1422,
+            "phone": "+41 31 320 45 45",
+            "amenities": [
+              "Room service",
+              "Restaurant",
+              "Pets Allowed",
+              "Wheelchair access",
+              "Internet",
+              "Free Internet",
+              "Bar/Lounge",
+              "Wifi",
+              "Free Wifi",
+              "Suites",
+              "Dry Cleaning",
+              "Meeting rooms",
+              "Non-smoking rooms",
+              "Laundry Service",
+              "Banquet Room",
+              "Air conditioning",
+              "Family Rooms",
+              "Multilingual Staff",
+              "Accessible rooms",
+              "Minibar"
+            ],
+            "price": {
+              "amount": 400,
+              "currency": "USD"
+            },
+            "guests": 2,
+            "image_urls": [
+              "https://media-cdn.tripadvisor.com/media/photo-o/1b/69/e4/7b/familiy-suite.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/0c/f4/96/e9/bolero-restaurante.jpg",
+              "https://media-cdn.tripadvisor.com/media/photo-o/1a/3f/c3/75/cascada-hotel.jpg"
+            ],
+            "booking_url": "https://www.tripadvisor.com/Hotel_Review-g188052-d229313-Reviews-Bellevue_Palace_Bern-Bern_Bern_Mittelland_District_Canton_of_Bern.html"
+          },
+          "days": [
+            {
+              "title": "Sightseeing in Bern",
+              "date": "2025-07-12",
+              "description": "Travel to Bern and explore the capital's historic sites.",
+              "day_number": "Day 4",
+              "activities": [
+                {
+                  "tag": "attraction",
+                  "title": "Old City",
+                  "description": "The whole of the city of Bern is just incredible. Every street is a delight with amazing buildings and a huge number of lovely fountains. Each one is different and has a story to tell. The cobbled streets are lovely to just walk around and enjoy finding what you can see.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188052-d645737-Reviews-Old_City-Bern_Bern_Mittelland_District_Canton_of_Bern.html",
+                  "address": "Bern Switzerland",
+                  "NumberOfReview": 4927,
+                  "Ratings": 5.0,
+                  "geocode": {
+                    "latitude": 46.947,
+                    "longitude": 7.447
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/0b/4f/65/c8/photo1jpg.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/97/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e6/72/96/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Rosengarten",
+                  "description": "The Rosengarten has a beautiful view of Bern. The gardens are a little underwhelming, pretty, but nothing spectacular. There is also a restaurant at the top, which was good, again, nothing amazing. It's a nice place to go on a beautiful day, but not a must see in Bern.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188052-d314751-Reviews-Rosengarten-Bern_Bern_Mittelland_District_Canton_of_Bern.html",
+                  "address": "Bern Switzerland",
+                  "NumberOfReview": 1725,
+                  "Ratings": 4.5,
+                  "geocode": {
+                    "latitude": 46.947,
+                    "longitude": 7.447
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/08/b8/0b/5a/lake-luzern.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/7a/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/e1/2e/74/caption.jpg"
+                  ]
+                },
+                {
+                  "tag": "attraction",
+                  "title": "Zytglogge",
+                  "description": "Zytglogge tower is a captivating blend of medieval engineering and astronomical brilliance right in the middle of the old town of Bern. This tower is fairly old as it was built in the 13th century. We were mesmerized by the intricate astronomical clock, which comes alive every hour with its whimsical mechanical figures. A must see, if you exploring Bern, especially for history lovers.",
+                  "minimum_duration": "1-2 hours",
+                  "booking_url": "https://www.tripadvisor.com/Attraction_Review-g188052-d195610-Reviews-Zytglogge-Bern_Bern_Mittelland_District_Canton_of_Bern.html",
+                  "address": "Bern Switzerland",
+                  "NumberOfReview": 1655,
+                  "Ratings": 4.0,
+                  "geocode": {
+                    "latitude": 46.947,
+                    "longitude": 7.447
+                  },
+                  "image_urls": [
+                    "https://media-cdn.tripadvisor.com/media/photo-o/16/06/fc/95/pilatus-aussblick.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f6/caption.jpg",
+                    "https://media-cdn.tripadvisor.com/media/photo-o/30/ce/c3/f5/caption.jpg"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+}
