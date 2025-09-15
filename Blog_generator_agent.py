@@ -1,120 +1,61 @@
 from Planning_agent import ReactAgent
-from colorama import Fore, Style, init
+from colorama import Fore
 import json
 from datetime import datetime
 
 from Tools.vision_capability_tool import get_multimodal_capability
-from Tools.web_scrape_tool import get_raw_website_content_tool
-from Tools.web_search_tool import get_search_results_tool
 
 
 class BlogGeneratorAgent:
     """
-    A comprehensive blog generator agent that can create detailed travel blogs
-    using natural language processing and multiple data sources.
+    Simple travel blog generator that analyzes only user-provided images
+    and composes a markdown blog without web search or scraping.
     """
 
     def __init__(self, model: str = "gemini-2.0-flash-exp", provider=None):
-        """
-        Initialize the Blog Generator Agent with necessary tools.
-        Args:
-            model: The LLM model to use for reasoning
-            provider: 'gemini' or 'groq' (optional). If None, ReactAgent decides via env.
-        """
-        # Define blog generation tools
-        self.tools = [
-            # get_multimodal_capability,
-            # get_raw_website_content_tool,
-            # get_search_results_tool,
-        ]
+        # Only the multimodal image analysis tool
+        self.tools = [get_multimodal_capability]
+
         self.system_prompt = """
-You are a specialized travel blog writer and content creator. 
-Your job is to create engaging, detailed, and well-structured travel blogs in markdown format.
+You are a focused travel blog writer. Create clear, engaging, well-structured travel blogs in markdown.
 
-...
+SCOPE AND DATA SOURCES
+- Use only the user's prompt and provided image URLs.
+- Analyze images via get_multimodal_capability to infer scenes, objects, moods, or activities.
+- Do not perform web search or scraping. Avoid unverifiable specifics.
 
-=========================
-BLOG CREATION GUIDELINES
-=========================
+BLOG GUIDELINES
+- Structure: title, intro, 3-6 concise sections, and a short wrap-up.
+- Tone: follow the requested tone; keep language natural and helpful.
+- Include the provided images at relevant points with descriptive alt text and short captions.
+- Use markdown headings (#, ##, ###), lists (-), quotes (>), and **bold** for emphasis when useful.
+- Use real blank lines; never output literal "\\n" characters.
 
-1. **Content Structure**: Create comprehensive blogs with:
-   - Compelling headlines and subheadings
-   - Detailed paragraphs with rich descriptions
-   - Practical travel tips and insights
-   - Local culture and history information
-   - Restaurant and accommodation recommendations
-   - Transportation and logistics advice
-   - Add image urls of user uploaded images in the blog where relevant in markdown format
+IMAGE INTEGRATION
+- For each provided image URL, call get_multimodal_capability with a helpful query and the URL.
+- Use the tool's observation to write 1-2 sentences about the image and place it near the most relevant section.
+- Embed with: ![Alt text](image_url "Short caption")
 
-2. **Markdown Formatting**:
-   - Use real blank lines for spacing (DO NOT output literal "\\n\\n" inside markdown).
-   - # for main title
-   - ## for major sections
-   - ### for subsections
-   - **bold** for emphasis
-   - *italic* for subtle emphasis
-   - Lists with - or numbered lists
-   - > for quotes or tips
-   - Code blocks for practical information like addresses
-   - Images must use this format:
-     ![Alt text](image_url "Caption")
-
-3. **Image Integration**:
-   - Use user-uploaded images for personal experiences analysis
-   - Find relevant web images for destinations, food, attractions
-   - Include image descriptions and captions
-   - Format: ![Alt text](image_url "Caption")
-
-...
-
-=========================
-RESPONSE FORMAT
-=========================
-
-Always return a JSON response with this structure:
+OUTPUT FORMAT (MUST be valid JSON):
 {
-  "blog_content": "Full markdown blog content here. 
-   Make sure markdown uses real blank lines, not escaped \\n characters. 
-   For example:
-
-   # Title
-
-   Paragraph text here.
-
-   ![Alt](url)
-
-   ## Section
-
-   More content...",
-  "metadata": {
-    "title": "Blog title",
-    "tone": "requested tone",
-    "language": "requested language", 
-    "creativity_level": "requested creativity",
-    "word_count": estimated_word_count,
-    "reading_time": "estimated reading time in minutes",
-    "tags": ["relevant", "travel", "tags"],
-    "destinations": ["mentioned destinations"]
-  },
-  "message": "Brief summary of the created blog",
-  "timestamp": "current ISO timestamp"
+    "blog_content": {
+        "title": "Cherry Blossoms in Japan: A Magical Journey",
+        "Detail": "Full markdown blog content with images embedded",
+    },
+    "metadata": {
+        "word_count": 1250,
+        "reading_time": "5 minutes",
+        "generated_at": "2024-03-15T10:30:00Z"
+    }
 }
 
-=========================
-CRITICAL RULES
-=========================
-- NEVER hallucinate facts about destinations, prices, or specific details
-- ALWAYS verify information using the web search and scrape tools
-- Use get_multimodal_capability ONLY for user-uploaded images
-- Create engaging, readable content that provides real value
-- Include practical tips and actionable advice
-- Ensure all markdown formatting is correct
-- DO NOT use literal "\\n" for line breaks — use real newlines
-- Adapt content length based on the topic and user requirements
+RULES
+- Do not fabricate specific facts, prices, or schedules.
+- Do not use web search or scrape any site.
+- Keep it readable and useful without external references.
 """
 
-
-        # Initialize the ReAct agent with blog generation tools
+        # Initialize the ReAct agent
         self.agent = ReactAgent(
             tools=self.tools,
             model=model,
@@ -128,9 +69,8 @@ CRITICAL RULES
 
         Args:
             query_data: Dictionary containing:
-                - tone: Writing tone (professional, casual, adventure, luxury, budget)
+                - tone: Writing tone (e.g., professional, casual)
                 - language: Target language for the blog
-                - tour_itinerary: Travel itinerary or destination information
                 - creativity: Creativity level (low, medium, high)
                 - user_prompt: Main topic or specific blog request
                 - user_images: List of user-uploaded image URLs (optional)
@@ -139,60 +79,49 @@ CRITICAL RULES
             dict: The structured blog response with markdown content
         """
         try:
-            # Extract parameters from query data
             tone = query_data.get('tone', 'casual')
             language = query_data.get('language', 'English')
-            tour_itinerary = query_data.get('tour_itinerary', '')
             creativity = query_data.get('creativity', 'medium')
             user_prompt = query_data.get('user_prompt', '')
             user_images = query_data.get('user_images', [])
 
-            # Construct the enhanced query for the agent
             enhanced_query = f"""
-BLOG GENERATION REQUEST:
+BLOG GENERATION REQUEST
 
-**Tone**: {tone}
-**Language**: {language}  
-**Creativity Level**: {creativity}
-**Main Topic/Prompt**: {user_prompt}
+Tone: {tone}
+Language: {language}
+Creativity Level: {creativity}
+Main Topic/Prompt: {user_prompt}
+User Images: {user_images if user_images else "None"}
 
-**Tour Itinerary/Destination Info**: 
-{tour_itinerary}
-
-**User Uploaded Images**: {user_images if user_images else "None provided"}
-
-INSTRUCTIONS:
-1. Create a comprehensive travel blog in {language} with a {tone} tone
-2. If user images are provided, analyze them using get_multimodal_capability to understand the user's travel experience
-3. Use web search to gather current, accurate information about destinations mentioned
-4. Use web scraping for detailed information from relevant travel websites
-5. Structure the blog with proper markdown formatting
-6. Include practical tips, cultural insights, and personal recommendations
-7. Ensure the creativity level is {creativity} - adjust storytelling and descriptive elements accordingly
-8. Make the content engaging and valuable for travelers
-
-Create a detailed blog that travelers would find genuinely helpful and inspiring!
+INSTRUCTIONS
+- Write a well-structured markdown blog in the specified tone and language.
+- Do NOT use web search or scraping. Keep content general and observational.
+- For EACH image URL provided, call get_multimodal_capability with a short, helpful query like
+  "Describe the scene, key objects, activities, ambiance, and travel context" and the image_url.
+- Use each observation to: (1) craft a one-sentence caption, (2) produce descriptive alt text,
+  and (3) decide the most relevant section to place the image.
+- Embed images with: ![Alt text](image_url "Short caption").
+- Keep sections focused and concise; avoid unverifiable specifics.
+- Return ONLY the required JSON with fields: blog_content, metadata, message, timestamp.
 """
 
-            response = self.agent.run(enhanced_query, max_rounds=25)
-            
-            # Try to parse the response as JSON
+            response = self.agent.run(enhanced_query, max_rounds=15)
+
             try:
                 if isinstance(response, str):
-                    # Look for JSON in the response
                     start_idx = response.find('{')
                     end_idx = response.rfind('}')
                     if start_idx != -1 and end_idx != -1:
                         json_str = response[start_idx:end_idx+1]
                         parsed_response = json.loads(json_str)
                         return parsed_response
-                    
-                # If no valid JSON found, create a fallback structure
+
                 return self._create_fallback_response(query_data, response)
-                
+
             except json.JSONDecodeError:
                 return self._create_fallback_response(query_data, response)
-                
+
         except Exception as e:
             return self._create_error_response(query_data, str(e))
 
@@ -211,8 +140,8 @@ Create a detailed blog that travelers would find genuinely helpful and inspiring
                 "tone": query_data.get('tone', 'casual'),
                 "language": query_data.get('language', 'English'),
                 "creativity_level": query_data.get('creativity', 'medium'),
-                "word_count": len(agent_response.split()),
-                "reading_time": f"{max(1, len(agent_response.split()) // 200)} minutes",
+                "word_count": len(agent_response.split()) if isinstance(agent_response, str) else 0,
+                "reading_time": f"{max(1, (len(agent_response.split()) if isinstance(agent_response, str) else 0) // 200)} minutes",
                 "tags": ["travel", "blog", "generated"],
                 "destinations": []
             },
@@ -234,8 +163,7 @@ Please try again with your request, ensuring all required information is provide
 ## Tips for Better Blog Generation:
 - Provide a clear topic or destination
 - Specify your preferred tone and language
-- Include relevant travel itinerary details
-- Upload images if you want them analyzed
+- Optionally include a few image URLs
 
 ---
 *Please contact support if this error persists.*
@@ -255,19 +183,10 @@ Please try again with your request, ensuring all required information is provide
         }
 
 
-# Helper function to create blog generator agent instance
 def create_blog_agent(model: str = "gemini-2.0-flash-exp", provider=None) -> BlogGeneratorAgent:
-    """
-    Create and return a BlogGeneratorAgent instance.
-
-    Args:
-        model: The LLM model to use
-        provider: The LLM provider to use
-
-    Returns:
-        BlogGeneratorAgent: Configured blog generator agent
-    """
+    """Factory to create the simplified BlogGeneratorAgent."""
     print(Fore.GREEN + "Blog Agent Model used:", Fore.YELLOW + model)
     if provider:
         print(Fore.GREEN + "Provider:", Fore.YELLOW + str(provider))
     return BlogGeneratorAgent(model=model, provider=provider)
+

@@ -33,27 +33,26 @@ def travel_query():
 def blog_generator():
     data = request.json
     print(f"[REQUEST] /blog-generator | data: {data}")
-    
+
     # Validate required fields
     if not data:
         print("[RESPONSE] /blog-generator | error: No data provided")
         return jsonify({"error": "No data provided"}), 400
-    
-    # Extract and validate parameters
+
+    # Extract expected parameters only (keep it simple)
     query_data = {
-        'tone': data.get('tone', 'casual'),
+        'tone': data.get('tone', 'professional'),
         'language': data.get('language', 'English'),
-        'tour_itinerary': data.get('tour_itinerary', ''),
         'creativity': data.get('creativity', 'medium'),
         'user_prompt': data.get('user_prompt', ''),
-        'user_images': data.get('user_images', [])
+        'user_images': data.get('user_images', []),
     }
-    
-    # Validate that at least user_prompt or tour_itinerary is provided
-    if not query_data['user_prompt'] and not query_data['tour_itinerary']:
-        print("[RESPONSE] /blog-generator | error: No topic or itinerary provided")
-        return jsonify({"error": "Either 'user_prompt' or 'tour_itinerary' must be provided"}), 400
-    
+
+    # Require a prompt/topic
+    if not query_data['user_prompt']:
+        print("[RESPONSE] /blog-generator | error: 'user_prompt' is required")
+        return jsonify({"error": "'user_prompt' is required"}), 400
+
     try:
         response = blog_agent.process_blog_query(query_data)
         print(f"[RESPONSE] /blog-generator | success: Blog generated")
