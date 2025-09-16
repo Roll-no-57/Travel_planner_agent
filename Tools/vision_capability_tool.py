@@ -1,5 +1,8 @@
 import os
-from huggingface_hub import InferenceClient
+import google.generativeai as genai
+import requests
+from PIL import Image
+from io import BytesIO
 
 from tool_decorator import tool
 
@@ -7,6 +10,9 @@ from dotenv import load_dotenv
 import json
 
 load_dotenv()
+
+# Configure Gemini API
+genai.configure(api_key="AIzaSyCrjGU-o1-wnSVCh-h7t2Vmh6w4x3zHR7c")
 
 @tool
 def get_multimodal_capability(query: str, image_url: str) -> str:
@@ -27,38 +33,40 @@ def get_multimodal_capability(query: str, image_url: str) -> str:
              suggested activities, and relevant contextual details.
     """
     try:
-        client = InferenceClient(
-            provider="novita",
-            api_key=os.getenv("HF_TOKEN"),
-        )
-
-        completion = client.chat.completions.create(
-            model="zai-org/GLM-4.5V",
-            messages=[
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": query},
-                        {"type": "image_url", "image_url": {"url": image_url}}
-                    ]
-                }
-            ],
-        )
-
+        # Use Gemini model that supports image input
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Fetch the image data from the URL
+        response = requests.get(image_url)
+        response.raise_for_status()
+        
+        # Open the image from the fetched bytes
+        img = Image.open(BytesIO(response.content))
+        
+        # Generate content by passing the query and image to the model
+        api_response = model.generate_content([query, img])
+        
         result = {
-            "message": completion.choices[0].message
+            "message": {
+                "content": api_response.text
+            }
         }
 
         print(result)
         return json.dumps(result)
 
+    except requests.exceptions.RequestException as e:
+        error_msg = f"Error fetching image from URL: {e}"
+        print(error_msg)
+        return json.dumps({"error": error_msg})
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return json.dumps({"error": str(e)})
+        error_msg = f"Error occurred: {e}"
+        print(error_msg)
+        return json.dumps({"error": error_msg})
 
 
 if __name__ == "__main__":
     # Example usage
-    query = "Plan a 2-day itinerary for a visit to the Eiffel Tower."
-    image_url = "https://i.ibb.co/DfWxMz1J/andy-holmes-D6-Tq-Ia-t-WRY-unsplash-jpg.jpg"
+    query = "Describe this picture in a few sentences."
+    image_url = "https://i.ibb.co/LD13KjW9/andy-holmes-D6-Tq-Ia-t-WRY-unsplash-jpg.jpg"
     print(get_multimodal_capability(query, image_url))
