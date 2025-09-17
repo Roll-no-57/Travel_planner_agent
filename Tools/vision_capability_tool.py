@@ -12,7 +12,7 @@ import json
 load_dotenv()
 
 # Configure Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY_ijyaan"))
 
 @tool
 def get_multimodal_capability(query: str, image_url: str) -> str:

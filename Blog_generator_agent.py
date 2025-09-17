@@ -31,8 +31,12 @@ BLOG GUIDELINES
 - Use markdown headings (#, ##, ###), lists (-), quotes (>), and **bold** for emphasis when useful.
 - Use real blank lines; never output literal "\\n" characters.
 
-IMAGE INTEGRATION
+IMAGE INTEGRATION - MANDATORY REQUIREMENTS
+- ALL user-uploaded image URLs MUST be included in the final blog response, no exceptions.
 - For each provided image URL, call get_multimodal_capability with a helpful query and the URL.
+- FALLBACK STRATEGY 1: If get_multimodal_capability fails, analyze the URL filename/path for context clues (e.g., "sunset.jpg", "restaurant_paris.png", "museum_visit.jpeg") to determine appropriate section placement.
+- FALLBACK STRATEGY 2: If URL analysis provides no context, place images randomly throughout the blog sections.
+- NEVER omit any user-provided image URLs from the final blog, regardless of tool success or failure.
 - Use the tool's observation to write 1-2 sentences about the image and place it near the most relevant section.
 - Embed with: ![Alt text](image_url "Short caption")
 
@@ -53,6 +57,7 @@ RULES
 - Do not fabricate specific facts, prices, or schedules.
 - Do not use web search or scrape any site.
 - Keep it readable and useful without external references.
+- MANDATORY: Every user-provided image URL must appear in the final blog content.
 """
 
         # Initialize the ReAct agent
@@ -94,16 +99,21 @@ Creativity Level: {creativity}
 Main Topic/Prompt: {user_prompt}
 User Images: {user_images if user_images else "None"}
 
-INSTRUCTIONS
+MANDATORY INSTRUCTIONS
 - Write a well-structured markdown blog in the specified tone and language.
 - Do NOT use web search or scraping. Keep content general and observational.
+- CRITICAL: ALL user-provided image URLs MUST appear in the final blog content - no exceptions.
 - For EACH image URL provided, call get_multimodal_capability with a short, helpful query like
   "Describe the scene, key objects, activities, ambiance, and travel context" and the image_url.
+- If get_multimodal_capability fails for any image:
+  STEP 1: Analyze the URL filename for context (e.g., "beach.jpg" → beach section, "food.png" → dining section)
+  STEP 2: If no context from filename, place the image randomly in any section
 - Use each observation to: (1) craft a one-sentence caption, (2) produce descriptive alt text,
   and (3) decide the most relevant section to place the image.
 - Embed images with: ![Alt text](image_url "Short caption").
 - Keep sections focused and concise; avoid unverifiable specifics.
 - Return ONLY the required JSON with fields: blog_content, metadata, message, timestamp.
+- VERIFY: Every image URL from the user_images list appears in your final blog_content.
 """
 
             response = self.agent.run(enhanced_query, max_rounds=15)
