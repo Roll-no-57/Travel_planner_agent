@@ -168,7 +168,7 @@ FORMAT 4 - Trip Planning (COMPLETE structure):
           "estimate_price": 0, # realistic price estimate
           "option": "flight/train/bus/car" # most suitable option
         },
-        "Accommodation": {
+        "Accomodation": {
           "name": "hotel name (EXACT from get_hotels_tool)",
           "description": "hotel description (EXACT from get_hotels_tool)",
           "address": "hotel address (EXACT from get_hotels_tool)",
